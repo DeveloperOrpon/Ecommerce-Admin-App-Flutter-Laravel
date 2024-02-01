@@ -96,9 +96,9 @@ class _AddProductState extends State<AddProduct> {
                 );
               },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: const Text(
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
                 'Enable stock control to track inventory.When a customer buys a product, the quantity is reduced automatically.',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
               ),

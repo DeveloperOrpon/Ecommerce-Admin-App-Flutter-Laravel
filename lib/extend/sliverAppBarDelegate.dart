@@ -29,13 +29,17 @@ class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-List<String> generateCombinations(List array1, List<String> array2) {
+List<String> generateCombinations(List size, List<String> colors) {
   List<String> result = [];
 
-  for (String element1 in array1) {
-    for (String element2 in array2) {
-      result.add('$element1$element2');
-    }
+  for (String element1 in size) {
+   if(colors.isNotEmpty){
+     for (String element2 in colors) {
+       result.add('$element1$element2');
+     }
+   }else{
+     result.add('$element1');
+   }
   }
   log("generateCombinations : ${result.length}");
   return result;

@@ -1,17 +1,16 @@
 import 'package:expandable_menu/expandable_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:super_context_menu/super_context_menu.dart';
 
 import '../../config/textStyle.dart';
 
-class ProductItem extends StatelessWidget {
-  const ProductItem({super.key});
+class CategoryTile extends StatelessWidget {
+  const CategoryTile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 140,
+      height: 130,
       padding: EdgeInsets.all(6),
       margin: EdgeInsets.only(left: 12, right: 12, bottom: 5),
       decoration: BoxDecoration(
@@ -28,8 +27,8 @@ class ProductItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: 85,
-                    width: 100,
+                    height: 75,
+                    width: 90,
                     decoration: BoxDecoration(
                         color: Colors.grey.shade400,
                         borderRadius: BorderRadius.circular(8)),
@@ -50,24 +49,22 @@ class ProductItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              child: Text("Long T-shirt For Man",
+                              child: Text("Category Name",
                                   style: productTextStyle)),
+
                         ],
                       ),
                       Text(
-                        "1 Piece",
+                        "1 Items Listed",
                         style: productTextStyle,
                       ),
-                      Text("\$ 6000",
-                          style: productTextStyle.copyWith(
-                              color: Theme.of(context).primaryColor)),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              child: Text("In Stock",
+                              child: Text("Active",
                                   style: productTextStyle.copyWith(
-                                      color: Colors.orange,
+                                      color: Colors.green,
                                       fontWeight: FontWeight.bold))),
                         ],
                       ),
@@ -118,7 +115,7 @@ class ProductItem extends StatelessWidget {
                 children: [
                   Icon(Icons.share, color: Theme.of(context).primaryColor),
                   SizedBox(width: 6),
-                  Text("Share Product")
+                  Text("Share Category")
                 ],
               )
             ],

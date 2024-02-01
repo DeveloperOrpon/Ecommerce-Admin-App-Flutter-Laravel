@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../extend/sliverAppBarDelegate.dart';
+import '../category/category.dart';
 import 'ProductInfo.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -11,18 +12,20 @@ class ProductScreen extends StatefulWidget {
   State<ProductScreen> createState() => _ProductScreenState();
 }
 
-class _ProductScreenState extends State<ProductScreen> with SingleTickerProviderStateMixin {
+class _ProductScreenState extends State<ProductScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(initialIndex: 0, length: 2, vsync: this);
   }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-
       child: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
@@ -36,34 +39,34 @@ class _ProductScreenState extends State<ProductScreen> with SingleTickerProvider
             ],
           ),
           SliverPersistentHeader(
-
             delegate: SliverAppBarDelegate(
-               TabBar(
+              TabBar(
                 controller: _tabController,
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.grey,
                 labelStyle: TextStyle(fontSize: 15),
                 unselectedLabelStyle: TextStyle(fontSize: 13),
                 tabs: [
-                  Tab( text: "Products",),
+                  Tab(
+                    text: "Products",
+                  ),
                   Tab(text: "Categories"),
                 ],
               ),
             ),
             pinned: true,
             floating: false,
-
           ),
         ],
         body: TabBarView(
-        controller: _tabController,
+          physics: BouncingScrollPhysics(),
+          controller: _tabController,
           children: const [
             ProductInfo(),
-            ProductInfo(),
+            CategoryInfo(),
           ],
         ),
       ),
-
     );
   }
 }

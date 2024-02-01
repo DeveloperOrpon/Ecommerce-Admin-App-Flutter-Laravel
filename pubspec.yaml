@@ -49,6 +49,21 @@ dependencies:
   html_editor_enhanced: ^2.5.1
   file_picker: ^5.5.0
   flex_color_picker: ^3.3.0
+  flutter_easyloading: ^3.0.5
+  google_fonts: ^6.1.0
+  chips_choice: ^3.0.1
+  image_picker: ^1.0.7
+  cached_network_image: ^3.3.1
+  super_context_menu: ^0.8.4
+  expandable_menu: ^0.0.5
+  font_awesome_flutter: ^10.7.0
+  dio: ^5.4.0
+  connectivity_plus: ^5.0.2
+  cherry_toast: ^1.8.0
+  flutter_spinkit: ^5.2.0
+  flutter_gallery_3d: ^1.1.1
+  fl_chart: ^0.66.1
+  vertical_scrollable_tabview: ^0.1.1
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +81,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
