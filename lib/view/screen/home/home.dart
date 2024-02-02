@@ -65,7 +65,6 @@ class HomeContent extends StatelessWidget {
               ],
             ),
             HomeSlider(),
-
             //end
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -241,22 +240,22 @@ class HomeContent extends StatelessWidget {
               ],
             ),
             HomeSlider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text(
-                        'Monthly Earning',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    'Monthly Earning',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
                     ),
-                  ],
+                  ),
                 ),
+              ],
+            ),
             SizedBox(
               height: 400,
               child: MonthlyEarnLineChart(),

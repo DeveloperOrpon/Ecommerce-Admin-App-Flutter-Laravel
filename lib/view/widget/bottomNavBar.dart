@@ -56,7 +56,7 @@ class BottomWidget extends StatelessWidget {
           paddingVertical: 10,
           onTap: (int index) {
             // homeController.pageController.animateToPage(index,
-            //     duration: Duration(milliseconds: 200),
+            //     duration: const Duration(milliseconds: 200),
             //     curve: Curves.linearToEaseOut);
             // homeController.homePageIndex.value=index;
           },

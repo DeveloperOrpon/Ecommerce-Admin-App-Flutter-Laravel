@@ -112,7 +112,7 @@ class LoginScreen extends StatelessWidget {
                         ?.saveAndValidate() ??
                     false) {
                   if (true) {
-                    // Get.to(HomeScreen(),transition: Transition.fadeIn);
+                    Get.to(HomeScreen(),transition: Transition.fadeIn);
                     startLoading();
                     // log("${_formKey.currentState.value}")
                     authController

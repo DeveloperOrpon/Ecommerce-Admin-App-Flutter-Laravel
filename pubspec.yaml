@@ -64,6 +64,8 @@ dependencies:
   flutter_gallery_3d: ^1.1.1
   fl_chart: ^0.66.1
   vertical_scrollable_tabview: ^0.1.1
+  calendar_date_picker2: ^0.5.3
+  pull_down_button: ^0.9.3
 
 dev_dependencies:
   flutter_test:
