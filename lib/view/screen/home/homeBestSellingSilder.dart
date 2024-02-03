@@ -13,33 +13,101 @@ class HomeSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeController=Get.put(HomeController());
+    final homeController = Get.put(HomeController());
     return Gallery3D(
         controller: homeController.controller,
-
-        itemConfig:  GalleryItemConfig(
+        itemConfig: GalleryItemConfig(
             width: 200,
             height: 220,
             radius: 10,
             isShowTransformMask: true,
-
             shadows: [
               BoxShadow(
-                  color: Colors.grey.shade200, offset: const Offset(2, 0), blurRadius: 2)
-            ]
-        ),
+                  color: Colors.grey.shade200,
+                  offset: const Offset(2, 0),
+                  blurRadius: 2)
+            ]),
         width: MediaQuery.of(context).size.width,
         height: 220,
         isClip: true,
-        onItemChanged: (index) {
-        },
+        onItemChanged: (index) {},
         onClickItem: (index) {
           if (kDebugMode) print("currentIndex:$index");
         },
         itemBuilder: (context, index) {
-          return Image.network(
-           homeController.demoImages[index],
-            fit: BoxFit.fill,
+          return Stack(
+            alignment: Alignment.bottomCenter,
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                homeController.demoImages[index],
+                fit: BoxFit.cover,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 150.0),
+                child: Container(
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: const Text(
+                          maxLines: 1,
+                          textAlign: TextAlign.justify,
+                          overflow: TextOverflow.ellipsis,
+                          "Iphone 15 Pro Max Black 256GB",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: const Text(
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                "Price\n 10,000 $currency",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 1,
+                              color: Colors.white,
+                            ),
+                            Expanded(
+                              child: const Text(
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                "Orders\n 10",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
           );
         });
   }

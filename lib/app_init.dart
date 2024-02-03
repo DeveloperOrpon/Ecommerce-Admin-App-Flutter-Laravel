@@ -1,3 +1,6 @@
+import 'package:ashique_admin_app/view/manage/banner/chooseBanner.dart';
+import 'package:ashique_admin_app/view/manage/payment/paymentMethod.dart';
+import 'package:ashique_admin_app/view/manage/shipping/shippingMethod.dart';
 import 'package:ashique_admin_app/view/screen/redirectScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +17,11 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      routes: {
+        ChooseBanner.routeName: (context) => const ChooseBanner(),
+        ShippingMethod.routeName: (context) => const ShippingMethod(),
+        PaymentMethod.routeName: (context) => const PaymentMethod(),
+      },
       home: const RedirectScreen(),
       theme: lightTheme,
       darkTheme: darkTheme,

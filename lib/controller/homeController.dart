@@ -1,9 +1,12 @@
-import 'package:ashique_admin_app/view/manage/shippingMethod.dart';
+import 'package:ashique_admin_app/view/manage/banner/chooseBanner.dart';
+import 'package:ashique_admin_app/view/manage/shipping/shippingMethod.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gallery_3d/gallery3d.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+
+import '../view/manage/payment/paymentMethod.dart';
 
 class HomeController extends GetxController with GetTickerProviderStateMixin {
   RxInt homePageIndex = RxInt(0);
@@ -54,22 +57,87 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     'Cancelled',
     'Failed',
   ];
-  List<Map<String, IconData>> manageGrid = [
-    {"Shipping Method": Icons.local_shipping},
-    {"Payment Method": FontAwesomeIcons.ccVisa},
-    {"Coupon":Icons.discount},
-    {"Push Notification":CupertinoIcons.bell},
-    {"Customer":CupertinoIcons.person_2_alt},
-    {"Support ticket":Icons.support_agent},
-    {"Business Settings":Icons.settings},
-    {"Product Reviews":Icons.reviews},
-    {"All Deals":CupertinoIcons.settings},
-    {"Sellers":Icons.pets_outlined},
-    {"Banner":Icons.image},
-    {"Brand":Icons.branding_watermark},
-  ];
-  List<Future<dynamic>?> manageGridRoute=[
-    Get.to(const ShippingMethod(),transition: Transition.rightToLeftWithFade),
+  List<Map<String, dynamic>> manageGrid = [
+    {
+      "Banner": Icons.image,
+      'info':
+          'Create and showcase banners to promote featured products or announcements.',
+      'route': ChooseBanner.routeName
+    },
+    {
+      "Shipping Method": Icons.local_shipping,
+      'info': 'Manage and track your product shipments with ease.',
+      'route': ShippingMethod.routeName
+    },
+    {
+      "Payment Method": FontAwesomeIcons.ccVisa,
+      'info':
+          'Securely process payments using various payment methods, including Visa.',
+      'route': PaymentMethod.routeName
+    },
+    {
+      "Coupon": Icons.discount,
+      'info': 'Create and manage discount coupons to attract more customers.',
+    },
+    {
+      "Push Notification": CupertinoIcons.bell,
+      'info':
+          'Keep your customers informed with push notifications about promotions and updates.',
+    },
+    {
+      "Customer": CupertinoIcons.person_2_alt,
+      'info': 'View and manage customer information and orders efficiently.',
+    },
+    {
+      "Support ticket": Icons.support_agent,
+      'info':
+          'Handle customer support tickets and provide assistance as needed.',
+    },
+    {
+      "Business Settings": Icons.settings,
+      'info':
+          'Configure and customize your business settings for optimal performance.',
+    },
+    {
+      "Product Reviews": Icons.reviews,
+      'info':
+          'Monitor and respond to product reviews to enhance customer satisfaction.',
+    },
+    {
+      "All Deals": CupertinoIcons.settings,
+      'info':
+          'Explore and manage all ongoing deals and promotions in one place.',
+    },
+    {
+      "Sellers": Icons.pets_outlined,
+      'info':
+          'Manage sellers and their products to ensure a diverse and quality product catalog.',
+    },
+    {
+      "Brand": Icons.branding_watermark,
+      'info':
+          'Establish and manage brand identity for a consistent and recognizable presence.',
+    },
+    {
+      "Currency": Icons.monetization_on,
+      'info': '',
+    },
+    {
+      "Social Media": FontAwesomeIcons.facebook,
+      'info': '',
+    },
+    {
+      "Web Config": Icons.wordpress_sharp,
+      'info': '',
+    },
+    {
+      "Product Reviews": Icons.star,
+      'info': '',
+    },
+    {
+      "Mail Config": Icons.mail,
+      'info': '',
+    },
   ];
 
   @override

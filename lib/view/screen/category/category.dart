@@ -10,46 +10,49 @@ class CategoryInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        ListView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-            CategoryTile(),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: CupertinoButton(
-            color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(10),
-              topLeft: Radius.circular(10),
-            ),
-            child: Text(
-              "Add New Category",
-              style: TextStyle(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  fontSize: 14),
-            ),
-            onPressed: () {
-              Get.to(AddCategory(), transition: Transition.fadeIn);
-            },
+    return Container(
+      color: Colors.grey.shade100,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          ListView(
+            physics: BouncingScrollPhysics(),
+            children: [
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+              CategoryTile(),
+            ],
           ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: CupertinoButton(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(10),
+                topLeft: Radius.circular(10),
+              ),
+              child: Text(
+                "Add New Category",
+                style: TextStyle(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    fontSize: 14),
+              ),
+              onPressed: () {
+                Get.to(AddCategory(), transition: Transition.fadeIn);
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

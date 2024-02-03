@@ -1,6 +1,5 @@
-
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class MonthlyEarnLineChart extends StatefulWidget {
   const MonthlyEarnLineChart({super.key});
@@ -10,283 +9,146 @@ class MonthlyEarnLineChart extends StatefulWidget {
 }
 
 class _MonthlyEarnLineChartState extends State<MonthlyEarnLineChart> {
-  List<Color> gradientColors = [
-  Colors.deepPurple,
-    Colors.purple,
-  ];
+  late double _columnWidth;
+  late double _columnSpacing;
+  List<ChartSampleData>? chartData;
+  TooltipBehavior? _tooltipBehavior;
 
-  bool showAvg = false;
+  @override
+  void initState() {
+    _columnWidth = 0.8;
+    _columnSpacing = 0.2;
+    _tooltipBehavior = TooltipBehavior(enable: true,header: 'Earning');
+    chartData = <ChartSampleData>[
+      ChartSampleData(
+          x: 'Norway', y: 16, secondSeriesYValue: 8, thirdSeriesYValue: 13),
+      ChartSampleData(
+          x: 'USA', y: 8, secondSeriesYValue: 10, thirdSeriesYValue: 7),
+      ChartSampleData(
+          x: 'Germany', y: 12, secondSeriesYValue: 10, thirdSeriesYValue: 5),
+      ChartSampleData(
+          x: 'Canada', y: 4, secondSeriesYValue: 8, thirdSeriesYValue: 14),
+      ChartSampleData(
+          x: 'Netherlands', y: 8, secondSeriesYValue: 5, thirdSeriesYValue: 4),
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        AspectRatio(
-          aspectRatio: 1.70,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              right: 18,
-              left: 12,
-              top: 24,
-              bottom: 12,
-            ),
-            child: LineChart(
-              showAvg ? avgData() : mainData(),
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 60,
-          height: 34,
-          child: TextButton(
-            onPressed: () {
-              setState(() {
-                showAvg = !showAvg;
-              });
-            },
-            child: Text(
-              'avg',
-              style: TextStyle(
-                fontSize: 12,
-                color: showAvg ? Colors.white.withOpacity(0.5) : Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ],
+    return SfCartesianChart(
+
+      plotAreaBorderWidth: 0,
+      title: ChartTitle(
+          text: '',
+          textStyle: TextStyle(
+            fontSize: 16,
+            // fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          )),
+      primaryXAxis: const CategoryAxis(
+        majorGridLines: MajorGridLines(width: 0),
+      ),
+      primaryYAxis: const NumericAxis(
+          axisLine: AxisLine(width: 0),
+          labelFormat: '{value}K',
+          majorTickLines: MajorTickLines(size: 0)),
+      series: _getDefaultColumnSeries(),
+      tooltipBehavior: _tooltipBehavior,
     );
   }
 
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
-    );
-    Widget text;
-    switch (value.toInt()) {
-      case 2:
-        text = const Text('MAR', style: style);
-        break;
-      case 5:
-        text = const Text('JUN', style: style);
-        break;
-      case 8:
-        text = const Text('SEP', style: style);
-        break;
-      default:
-        text = const Text('', style: style);
-        break;
-    }
+  /// Get default column series
+  List<ColumnSeries<ChartSampleData, String>> _getDefaultColumnSeries() {
+    return <ColumnSeries<ChartSampleData, String>>[
+      ColumnSeries<ChartSampleData, String>(
+        color: Theme.of(context).primaryColor,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(5),
+          topRight: Radius.circular(5),
+        ),
+        width: .85,
 
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      child: text,
-    );
+        dataSource: <ChartSampleData>[
+          ChartSampleData(x: 'Jan', y: 1),
+          ChartSampleData(x: 'Feb', y: 2),
+          ChartSampleData(x: 'Mar', y: 1),
+          ChartSampleData(x: 'April', y: 5),
+          ChartSampleData(x: 'May', y: 2),
+          ChartSampleData(x: 'Jun', y: 1),
+          ChartSampleData(x: 'Jul', y: 4),
+          ChartSampleData(x: 'Aug', y: 2),
+          ChartSampleData(x: 'Sep', y: 6),
+          ChartSampleData(x: 'Oct', y: 1),
+          ChartSampleData(x: 'Now', y: 3),
+          ChartSampleData(x: 'Dec', y: 5),
+        ],
+        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        yValueMapper: (ChartSampleData sales, _) => sales.y,
+        dataLabelSettings: const DataLabelSettings(
+            isVisible: true, textStyle: TextStyle(fontSize: 10)),
+      )
+    ];
   }
+}
 
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 15,
-    );
-    String text;
-    switch (value.toInt()) {
-      case 1:
-        text = '10K';
-        break;
-      case 3:
-        text = '30k';
-        break;
-      case 5:
-        text = '50k';
-        break;
-      default:
-        return Container();
-    }
+class ChartSampleData {
+  /// Holds the datapoint values like x, y, etc.,
+  ChartSampleData(
+      {this.x,
+      this.y,
+      this.xValue,
+      this.yValue,
+      this.secondSeriesYValue,
+      this.thirdSeriesYValue,
+      this.pointColor,
+      this.size,
+      this.text,
+      this.open,
+      this.close,
+      this.low,
+      this.high,
+      this.volume});
 
-    return Text(text, style: style, textAlign: TextAlign.left);
-  }
+  /// Holds x value of the datapoint
+  final dynamic x;
 
-  LineChartData mainData() {
-    return LineChartData(
-      gridData: FlGridData(
-        show: true,
-        drawVerticalLine: true,
-        horizontalInterval: 1,
-        verticalInterval: 1,
-        getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: Colors.purple,
-            strokeWidth: 1,
-          );
-        },
-        getDrawingVerticalLine: (value) {
-          return const FlLine(
-            color: Colors.grey,
-            strokeWidth: 1,
-          );
-        },
-      ),
-      titlesData: FlTitlesData(
-        show: true,
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 30,
-            interval: 1,
-            getTitlesWidget: bottomTitleWidgets,
-          ),
-        ),
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            interval: 1,
-            getTitlesWidget: leftTitleWidgets,
-            reservedSize: 42,
-          ),
-        ),
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(color: const Color(0xff37434d)),
-      ),
-      minX: 0,
-      maxX: 11,
-      minY: 0,
-      maxY: 6,
-      lineBarsData: [
-        LineChartBarData(
-          spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
-          isCurved: true,
-          gradient: LinearGradient(
-            colors: gradientColors,
-          ),
-          barWidth: 5,
-          isStrokeCapRound: true,
-          dotData: const FlDotData(
-            show: false,
-          ),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: LinearGradient(
-              colors: gradientColors
-                  .map((color) => color.withOpacity(0.3))
-                  .toList(),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  /// Holds y value of the datapoint
+  final num? y;
 
-  LineChartData avgData() {
-    return LineChartData(
-      lineTouchData: const LineTouchData(enabled: false),
-      gridData: FlGridData(
-        show: true,
-        drawHorizontalLine: true,
-        verticalInterval: 1,
-        horizontalInterval: 1,
-        getDrawingVerticalLine: (value) {
-          return const FlLine(
-            color: Color(0xff37434d),
-            strokeWidth: 1,
-          );
-        },
-        getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: Color(0xff37434d),
-            strokeWidth: 1,
-          );
-        },
-      ),
-      titlesData: FlTitlesData(
-        show: true,
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 30,
-            getTitlesWidget: bottomTitleWidgets,
-            interval: 1,
-          ),
-        ),
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: leftTitleWidgets,
-            reservedSize: 42,
-            interval: 1,
-          ),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(color: const Color(0xff37434d)),
-      ),
-      minX: 0,
-      maxX: 11,
-      minY: 0,
-      maxY: 6,
-      lineBarsData: [
-        LineChartBarData(
-          spots: const [
-            FlSpot(0, 3.44),
-            FlSpot(2.6, 3.44),
-            FlSpot(4.9, 3.44),
-            FlSpot(6.8, 3.44),
-            FlSpot(8, 3.44),
-            FlSpot(9.5, 3.44),
-            FlSpot(11, 3.44),
-          ],
-          isCurved: true,
-          gradient: LinearGradient(
-            colors: [
-              ColorTween(begin: gradientColors[0], end: gradientColors[1])
-                  .lerp(0.2)!,
-              ColorTween(begin: gradientColors[0], end: gradientColors[1])
-                  .lerp(0.2)!,
-            ],
-          ),
-          barWidth: 5,
-          isStrokeCapRound: true,
-          dotData: const FlDotData(
-            show: false,
-          ),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: LinearGradient(
-              colors: [
-                ColorTween(begin: gradientColors[0], end: gradientColors[1])
-                    .lerp(0.2)!
-                    .withOpacity(0.1),
-                ColorTween(begin: gradientColors[0], end: gradientColors[1])
-                    .lerp(0.2)!
-                    .withOpacity(0.1),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  /// Holds x value of the datapoint
+  final dynamic xValue;
+
+  /// Holds y value of the datapoint
+  final num? yValue;
+
+  /// Holds y value of the datapoint(for 2nd series)
+  final num? secondSeriesYValue;
+
+  /// Holds y value of the datapoint(for 3nd series)
+  final num? thirdSeriesYValue;
+
+  /// Holds point color of the datapoint
+  final Color? pointColor;
+
+  /// Holds size of the datapoint
+  final num? size;
+
+  /// Holds datalabel/text value mapper of the datapoint
+  final String? text;
+
+  /// Holds open value of the datapoint
+  final num? open;
+
+  /// Holds close value of the datapoint
+  final num? close;
+
+  /// Holds low value of the datapoint
+  final num? low;
+
+  /// Holds high value of the datapoint
+  final num? high;
+
+  /// Holds open value of the datapoint
+  final num? volume;
 }

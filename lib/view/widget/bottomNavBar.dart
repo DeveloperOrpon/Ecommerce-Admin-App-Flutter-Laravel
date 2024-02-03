@@ -55,10 +55,10 @@ class BottomWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           paddingVertical: 10,
           onTap: (int index) {
-            // homeController.pageController.animateToPage(index,
-            //     duration: const Duration(milliseconds: 200),
-            //     curve: Curves.linearToEaseOut);
-            // homeController.homePageIndex.value=index;
+            homeController.pageController.animateToPage(index,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.linearToEaseOut);
+            homeController.homePageIndex.value=index;
           },
         );
       }),

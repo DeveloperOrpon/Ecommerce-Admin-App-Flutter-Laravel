@@ -2,13 +2,14 @@ import 'package:ashique_admin_app/config/appConst.dart';
 import 'package:ashique_admin_app/controller/homeController.dart';
 import 'package:ashique_admin_app/view/screen/home/homeBestSellingSilder.dart';
 import 'package:ashique_admin_app/view/screen/home/monthEarnLine.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../manage/manage.dart';
 
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
@@ -38,12 +39,16 @@ class HomeContent extends StatelessWidget {
               fit: BoxFit.fitHeight,
               height: 100,
             ),
-            // actions: [
-            //   Switch(
-            //     value: false,
-            //     onChanged: (value) {},
-            //   ),
-            // ],
+            actions: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(.7),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(appVersion),
+              )
+            ],
           ),
           SliverList(
               delegate: SliverChildListDelegate([
@@ -64,7 +69,7 @@ class HomeContent extends StatelessWidget {
                 ),
               ],
             ),
-            HomeSlider(),
+            const HomeSlider(),
             //end
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,13 +228,14 @@ class HomeContent extends StatelessWidget {
               )),
           SliverList(
               delegate: SliverChildListDelegate([
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
-                    'New Sellings',
+                    'Home Shortcuts',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -237,9 +243,64 @@ class HomeContent extends StatelessWidget {
                     ),
                   ),
                 ),
+                IconButton(
+                  onPressed: () {
+                    _homeShortcutAddDialog(context,homeController);
+                  },
+                  icon: Icon(
+                    CupertinoIcons.add,
+                  ),
+                )
               ],
             ),
-            HomeSlider(),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              height: 100,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) => SizedBox(
+                  height: 55,
+                  width: 90,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                            top: 4, right: 4, left: 4, bottom: 7),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                            border:
+                                Border.all(color: Colors.black26, width: .3)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              homeController.manageGrid[index].values.first,
+                              size: 30,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                itemCount: 6,
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -256,12 +317,28 @@ class HomeContent extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 10),
             SizedBox(
               height: 400,
               child: MonthlyEarnLineChart(),
             )
           ]))
         ],
+      ),
+    );
+  }
+
+  _homeShortcutAddDialog(BuildContext context, HomeController homeController) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => Container(
+        padding: EdgeInsets.all(10),
+        height: Get.height*.6,
+        child: ListView.builder(
+            itemBuilder: (context, index) =>
+                manageTitle(homeController, context, index,isCheck: index<4),
+            itemCount: homeController.manageGrid.length),
       ),
     );
   }

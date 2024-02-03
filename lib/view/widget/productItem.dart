@@ -1,6 +1,9 @@
+import 'package:ashique_admin_app/config/appConst.dart';
+import 'package:ashique_admin_app/view/widget/productSwitch.dart';
 import 'package:expandable_menu/expandable_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:load_switch/load_switch.dart';
 import 'package:super_context_menu/super_context_menu.dart';
 
 import '../../config/textStyle.dart';
@@ -12,11 +15,15 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 140,
-      padding: EdgeInsets.all(6),
+      padding: EdgeInsets.all(8),
       margin: EdgeInsets.only(left: 12, right: 12, bottom: 5),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Theme.of(context).primaryColor.withOpacity(.4),
+          width: .4,
+        )
       ),
       child: Column(
         children: [
@@ -28,14 +35,16 @@ class ProductItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: 85,
+                    height: 80,
                     width: 100,
                     decoration: BoxDecoration(
                         color: Colors.grey.shade400,
                         borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(
-                      CupertinoIcons.photo,
-                      size: 60,
+                    child: Image.asset(
+                      appLogo,
+                      width: 100,
+                      height: 80,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   SizedBox(
@@ -75,10 +84,7 @@ class ProductItem extends StatelessWidget {
                   ))
                 ],
               ),
-              Switch(
-                value: false,
-                onChanged: (value) {},
-              ),
+              const ProductSwitch(),
               Positioned(
                   top: -12.0,
                   left: 0.0,
@@ -91,7 +97,7 @@ class ProductItem extends StatelessWidget {
                           width: 40.0,
                           height: 40.0,
                           backgroundColor: Colors.transparent,
-                          iconColor:  Theme.of(context).primaryColor,
+                          iconColor: Theme.of(context).primaryColor,
                           itemContainerColor: Theme.of(context).primaryColor,
                           items: [
                             Icon(

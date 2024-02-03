@@ -1,3 +1,5 @@
+import 'package:ashique_admin_app/config/appConst.dart';
+import 'package:ashique_admin_app/view/widget/productSwitch.dart';
 import 'package:expandable_menu/expandable_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +16,12 @@ class CategoryTile extends StatelessWidget {
       padding: EdgeInsets.all(6),
       margin: EdgeInsets.only(left: 12, right: 12, bottom: 5),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Theme.of(context).primaryColor.withOpacity(.4),
+          width: .4,
+        )
       ),
       child: Column(
         children: [
@@ -30,12 +36,9 @@ class CategoryTile extends StatelessWidget {
                     height: 75,
                     width: 90,
                     decoration: BoxDecoration(
-                        color: Colors.grey.shade400,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(
-                      CupertinoIcons.photo,
-                      size: 60,
-                    ),
+                    child: Image.asset(appLogo),
                   ),
                   SizedBox(
                     width: 10,
@@ -72,10 +75,7 @@ class CategoryTile extends StatelessWidget {
                   ))
                 ],
               ),
-              Switch(
-                value: false,
-                onChanged: (value) {},
-              ),
+        const ProductSwitch(),
               Positioned(
                   top: -12.0,
                   left: 0.0,

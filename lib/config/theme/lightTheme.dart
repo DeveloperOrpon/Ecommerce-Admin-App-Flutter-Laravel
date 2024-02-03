@@ -2,6 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 var lightTheme = FlexThemeData.light(
+tabBarStyle:FlexTabBarStyle.forAppBar,
 
   scheme: FlexScheme.mandyRed,
   background: Colors.white,
@@ -19,7 +20,7 @@ var lightTheme = FlexThemeData.light(
     error: Colors.redAccent,
     scaffoldBackground: Colors.white,
     appBarStyle:FlexAppBarStyle.material,
-    appBarBackground: Colors.deepPurple,
+    appBarBackground: Colors.white,
     textTheme: const TextTheme(
         bodyLarge: TextStyle(fontSize: 20.0),
         labelSmall: TextStyle(fontSize: 13.0),

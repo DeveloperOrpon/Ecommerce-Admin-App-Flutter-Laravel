@@ -13,33 +13,38 @@ class ProductInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productController = Get.put(ProductController());
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        ListView.builder(
-            physics: BouncingScrollPhysics(),
-            itemCount: 10,
-            itemBuilder: (context, index) => ProductItem()),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: CupertinoButton(
-            color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(10),
-              topLeft: Radius.circular(10),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100
+      ),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: 10,
+              itemBuilder: (context, index) => ProductItem()),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: CupertinoButton(
+              color: Theme.of(context).primaryColor,
+              borderRadius: const BorderRadius.only(
+                bottomRight: Radius.circular(10),
+                topLeft: Radius.circular(10),
+              ),
+              child: Text(
+                "Add New Product",
+                style: TextStyle(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    fontSize: 14),
+              ),
+              onPressed: () {
+                Get.to(AddProduct(), transition: Transition.fadeIn);
+              },
             ),
-            child: Text(
-              "Add New Product",
-              style: TextStyle(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  fontSize: 14),
-            ),
-            onPressed: () {
-              Get.to(AddProduct(), transition: Transition.fadeIn);
-            },
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }
