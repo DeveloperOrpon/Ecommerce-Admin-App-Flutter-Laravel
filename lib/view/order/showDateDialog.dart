@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-showDateDialog(BuildContext context) {
+import '../../config/textStyle.dart';
+
+showDateDialogRange(BuildContext context,{String? title}) {
   var today=DateTime.now();
   List<DateTime?> _dialogCalendarPickerValue = [
     DateTime(2021, 8, 10),
@@ -172,11 +174,11 @@ showDateDialog(BuildContext context) {
 
     },
     child: FormBuilderTextField(
-      name: 'search',
+      name: title??'search',
       enabled: false,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.zero,
-        hintText: 'Date Range',
+        hintText: title??'Date Range',
         prefixIcon: Icon(CupertinoIcons.calendar),
         labelStyle: TextStyle(
             fontSize: 12, color: Theme.of(context).primaryColor),
@@ -233,4 +235,29 @@ String _getValueText(
   }
 
   return valueText;
+}
+
+showSingleDatePicker(BuildContext context,String title,Function onTap,{Color? color}){
+  return InkWell(
+    onTap: () async {
+      await showDatePicker(context: context, firstDate: DateTime.now(), lastDate: DateTime(2100));
+    },
+    child: FormBuilderTextField(
+      enabled: false,
+      obscureText: true,
+      name: 'Code',
+      decoration: decoration(
+          fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+          title: title,
+          context: context,
+          iconData: Icons.date_range,
+          hideText: true),
+      validator: FormBuilderValidators.compose([
+        FormBuilderValidators.required(),
+        FormBuilderValidators.maxWordsCount(8),
+      ]),
+      autofillHints: const [AutofillHints.email],
+      style: const TextStyle(fontSize: 14),
+    ),
+  );
 }

@@ -6,7 +6,13 @@ import 'package:flutter_gallery_3d/gallery3d.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
+import '../view/manage/brand/brandScreen.dart';
+import '../view/manage/coupon/coupon.dart';
+import '../view/manage/customer/customer.dart';
+import '../view/manage/deals/allDeals.dart';
 import '../view/manage/payment/paymentMethod.dart';
+import '../view/manage/pushNotification/pushNotificationSetting.dart';
+import '../view/manage/supportTicket/supportTicket.dart';
 
 class HomeController extends GetxController with GetTickerProviderStateMixin {
   RxInt homePageIndex = RxInt(0);
@@ -61,7 +67,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     {
       "Banner": Icons.image,
       'info':
-          'Create and showcase banners to promote featured products or announcements.',
+      'Create and showcase banners to promote featured products or announcements.',
       'route': ChooseBanner.routeName
     },
     {
@@ -72,73 +78,88 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     {
       "Payment Method": FontAwesomeIcons.ccVisa,
       'info':
-          'Securely process payments using various payment methods, including Visa.',
+      'Securely process payments using various payment methods, including Visa.',
       'route': PaymentMethod.routeName
     },
     {
       "Coupon": Icons.discount,
       'info': 'Create and manage discount coupons to attract more customers.',
+      'route': CouponScreen.routeName
     },
     {
       "Push Notification": CupertinoIcons.bell,
       'info':
-          'Keep your customers informed with push notifications about promotions and updates.',
+      'Keep your customers informed with push notifications about promotions and updates.',
+      'route': PushNotificationSetting.routeName
     },
     {
       "Customer": CupertinoIcons.person_2_alt,
       'info': 'View and manage customer information and orders efficiently.',
-    },
-    {
-      "Support ticket": Icons.support_agent,
-      'info':
-          'Handle customer support tickets and provide assistance as needed.',
-    },
-    {
-      "Business Settings": Icons.settings,
-      'info':
-          'Configure and customize your business settings for optimal performance.',
-    },
-    {
-      "Product Reviews": Icons.reviews,
-      'info':
-          'Monitor and respond to product reviews to enhance customer satisfaction.',
-    },
-    {
-      "All Deals": CupertinoIcons.settings,
-      'info':
-          'Explore and manage all ongoing deals and promotions in one place.',
-    },
-    {
-      "Sellers": Icons.pets_outlined,
-      'info':
-          'Manage sellers and their products to ensure a diverse and quality product catalog.',
+      'route': CustomerScreen.routeName
     },
     {
       "Brand": Icons.branding_watermark,
       'info':
-          'Establish and manage brand identity for a consistent and recognizable presence.',
+      'Establish and manage brand identity for a consistent and recognizable presence.',
+      'route': BrandScreen.routeName
+    },
+    {
+      "All Deals": CupertinoIcons.settings,
+      'info':
+      'Explore and manage all ongoing deals and promotions in one place.',
+      'route': AllDeals.routeName
+    },
+    {
+      "Support ticket": Icons.support_agent,
+      'info':
+      'Handle customer support tickets and provide assistance as needed.',
+      'route': SupportTicket.routeName
+    },
+    {
+      "Business Settings": Icons.settings,
+      'info':
+      'Configure and customize your business settings for optimal performance.',
+      // 'route': BusinessSettings.routeName
+    },
+    {
+      "Product Reviews": Icons.reviews,
+      'info':
+      'Monitor and respond to product reviews to enhance customer satisfaction.',
+      // 'route': ProductReviews.routeName
+    },
+    {
+      "Sellers": Icons.pets_outlined,
+      'info':
+      'Manage sellers and their products to ensure a diverse and quality product catalog.',
+      // 'route': Sellers.routeName
     },
     {
       "Currency": Icons.monetization_on,
-      'info': '',
+      'info': 'Manage currency settings for your business.',
+      // 'route': Currency.routeName
     },
     {
       "Social Media": FontAwesomeIcons.facebook,
-      'info': '',
+      'info': 'Manage social media settings and integrations.',
+      // 'route': SocialMedia.routeName
     },
     {
       "Web Config": Icons.wordpress_sharp,
-      'info': '',
+      'info': 'Configure web-related settings for your business.',
+      // 'route': WebConfig.routeName
     },
     {
       "Product Reviews": Icons.star,
-      'info': '',
+      'info': 'Manage and respond to product reviews from customers.',
+      // 'route': ProductReviews.routeName
     },
     {
       "Mail Config": Icons.mail,
-      'info': '',
+      'info': 'Configure email-related settings for your business.',
+      // 'route': MailConfig.routeName
     },
   ];
+
 
   @override
   void onInit() {

@@ -110,7 +110,7 @@ class OrderContent extends StatelessWidget {
               delegate: SliverChildListDelegate([
             Row(
               children: [
-                Expanded(child: showDateDialog(context)),
+                Expanded(child: showDateDialogRange(context)),
                 const SizedBox(width: 13),
                 Expanded(
                     child: FormBuilderTextField(

@@ -17,18 +17,18 @@ class ShippingMethod extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
+          const SliverAppBar(
             elevation: 0,
             backgroundColor: Colors.white,
             foregroundColor: Colors.white,
             surfaceTintColor: Colors.white,
-            systemOverlayStyle: const SystemUiOverlayStyle(
+            systemOverlayStyle: SystemUiOverlayStyle(
               statusBarBrightness: Brightness.dark,
               statusBarIconBrightness: Brightness.dark,
             ),
             pinned: true,
             floating: true,
-            title: const Text(
+            title: Text(
               'Shipping Method',
               style: TextStyle(
                 color: Colors.black,
@@ -92,7 +92,7 @@ class ShippingMethod extends StatelessWidget {
                             ),
                           ],
                         )),
-                        const ProductSwitch(),
+                        const CustomSwitch(),
                       ],
                     ),
                   ),
@@ -129,7 +129,7 @@ class ShippingMethod extends StatelessWidget {
                             ),
                           ],
                         )),
-                        const ProductSwitch(),
+                        const CustomSwitch(),
                       ],
                     ),
                   ),
@@ -166,7 +166,7 @@ class ShippingMethod extends StatelessWidget {
                             ),
                           ],
                         )),
-                        const ProductSwitch(),
+                        const CustomSwitch(),
                       ],
                     ),
                   ),

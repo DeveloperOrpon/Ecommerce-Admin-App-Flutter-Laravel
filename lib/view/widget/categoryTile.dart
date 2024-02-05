@@ -75,7 +75,7 @@ class CategoryTile extends StatelessWidget {
                   ))
                 ],
               ),
-        const ProductSwitch(),
+        const CustomSwitch(),
               Positioned(
                   top: -12.0,
                   left: 0.0,

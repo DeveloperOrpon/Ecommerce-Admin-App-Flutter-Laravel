@@ -90,19 +90,19 @@ class OrderDetails extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              _orderDetailsTile('Order Number', '100023'),
-              _orderDetailsTile('Order Date', '02 Feb,2024'),
-              _orderDetailsTile('Order Total', "BDT 10,000"),
+              orderDetailsTile('Order Number', '100023'),
+              orderDetailsTile('Order Date', '02 Feb,2024'),
+              orderDetailsTile('Order Total', "BDT 10,000"),
               const SizedBox(height: 5),
               CustomDivider(height: 3),
               const SizedBox(height: 5),
-              _orderDetailsTile('Shipping Method', 'Express Delivery'),
-              _orderDetailsTile('Payment Method', 'Cash On Delivery'),
+              orderDetailsTile('Shipping Method', 'Express Delivery'),
+              orderDetailsTile('Payment Method', 'Cash On Delivery'),
               const SizedBox(height: 5),
               CustomDivider(height: 3),
               const SizedBox(height: 5),
-              _orderDetailsTile('Customer Name', 'Orpon Hasan'),
-              _orderDetailsTile('Address',
+              orderDetailsTile('Customer Name', 'Orpon Hasan'),
+              orderDetailsTile('Address',
                   'Shewrapara Shamimshoroni,Mirpur,Dhaka,Bangladesh'),
               const SizedBox(height: 5),
               CustomDivider(height: 3),
@@ -314,14 +314,14 @@ class OrderDetails extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 5),
-                    _orderDetailsTile('Name', 'Orpon Hasan'),
-                    _orderDetailsTile('Mobile Number', '01932610623'),
-                    _orderDetailsTile('Email', 'developerorpon@gmail.com'),
-                    _orderDetailsTile('Road', 'A5,B Block'),
-                    _orderDetailsTile('State', 'Dhaka'),
-                    _orderDetailsTile('City', 'Dhaka'),
-                    _orderDetailsTile('Country', 'Bangladesh'),
-                    _orderDetailsTile(
+                    orderDetailsTile('Name', 'Orpon Hasan'),
+                    orderDetailsTile('Mobile Number', '01932610623'),
+                    orderDetailsTile('Email', 'developerorpon@gmail.com'),
+                    orderDetailsTile('Road', 'A5,B Block'),
+                    orderDetailsTile('State', 'Dhaka'),
+                    orderDetailsTile('City', 'Dhaka'),
+                    orderDetailsTile('Country', 'Bangladesh'),
+                    orderDetailsTile(
                         'Address', 'Mirpur,Shewrapara,Dhaka,Bangladesh'),
                   ],
                 ),
@@ -330,37 +330,6 @@ class OrderDetails extends StatelessWidget {
             ])),
           ],
         ),
-      ),
-    );
-  }
-
-  _orderDetailsTile(String name, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              name,
-              style: TextStyle(fontSize: 14, color: Colors.black54),
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Text(
-              maxLines: 2,
-              textAlign: TextAlign.justify,
-              overflow: TextOverflow.ellipsis,
-              ":  ${value}",
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -424,4 +393,34 @@ class OrderDetails extends StatelessWidget {
               ],
             ));
   }
+}
+orderDetailsTile(String name, String value) {
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 3),
+    child: Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            name,
+            style: TextStyle(fontSize: 14, color: Colors.black54),
+          ),
+        ),
+        Expanded(
+          flex: 4,
+          child: Text(
+            maxLines: 2,
+            textAlign: TextAlign.justify,
+            overflow: TextOverflow.ellipsis,
+            ":  ${value}",
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }

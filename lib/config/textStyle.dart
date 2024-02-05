@@ -2,26 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 InputDecoration decoration(
-    {required String title,required BuildContext context, IconData? iconData,bool hideText=false}) =>
+    {required String title,required BuildContext context, IconData? iconData, Widget? postFixIcon,bool hideText=false,Color? fillColor,InputBorder? inputBorder}) =>
     InputDecoration(
       labelText: title,
-
-
+      suffixIcon: postFixIcon,
       prefixIcon: iconData != null
           ? Icon(iconData, color: Theme.of(context).primaryColor)
           : const Center(),
       labelStyle: TextStyle(fontSize: 12,color: Theme.of(context).primaryColor),
-      fillColor: Colors.grey.shade200,
+      fillColor:fillColor?? Colors.grey.shade100,
       filled: true,
-      border: OutlineInputBorder(
+      border:inputBorder?? OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide.none,
       ),
-      enabledBorder: OutlineInputBorder(
+      enabledBorder: inputBorder?? OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide.none,
       ),
-      focusedBorder: OutlineInputBorder(
+      focusedBorder:inputBorder?? OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide.none,
       ),
