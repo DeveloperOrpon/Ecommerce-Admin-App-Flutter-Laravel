@@ -4,7 +4,7 @@ import 'package:ashique_admin_app/config/appConst.dart';
 import 'package:ashique_admin_app/config/textStyle.dart';
 import 'package:ashique_admin_app/controller/AuthenticationController.dart';
 import 'package:ashique_admin_app/helper/helper.dart';
-import 'package:ashique_admin_app/view/screen/homeScreen.dart';
+import 'package:ashique_admin_app/view/dashboard/homeScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';

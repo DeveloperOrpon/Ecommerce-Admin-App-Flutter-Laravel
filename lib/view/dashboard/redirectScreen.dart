@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:ashique_admin_app/model/adminRes.dart';
-import 'package:ashique_admin_app/view/screen/homeScreen.dart';
+import 'package:ashique_admin_app/view/dashboard/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

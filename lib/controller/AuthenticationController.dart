@@ -14,10 +14,11 @@ import '../config/api/api_route.dart';
 import '../config/cache_stroage/localStroage.dart';
 import '../helper/helper.dart';
 import '../model/adminRes.dart';
-import '../view/screen/redirectScreen.dart';
+import '../view/dashboard/redirectScreen.dart';
 
 class AuthenticationController extends GetxController {
   late DIO.Dio dio;
+  Rxn<File> selectUploadProfileImage=Rxn<File>();
   Rxn<AdminRes> adminRes = Rxn<AdminRes>();
   final loginFormKey = GlobalKey<FormBuilderState>();
 

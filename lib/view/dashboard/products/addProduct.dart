@@ -55,7 +55,7 @@ class _AddProductState extends State<AddProduct> {
                 name: 'price',
                 initialValue: '0.00',
                 decoration: InputDecoration(
-                    labelText: 'Pice',
+                    labelText: 'Price',
                     prefixIcon: Icon(CupertinoIcons.money_dollar),
                     labelStyle: TextStyle(fontSize: 12)),
                 validator: FormBuilderValidators.compose([

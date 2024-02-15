@@ -1,7 +1,9 @@
 import 'package:ashique_admin_app/config/appConst.dart';
 import 'package:ashique_admin_app/controller/homeController.dart';
-import 'package:ashique_admin_app/view/screen/home/homeBestSellingSilder.dart';
-import 'package:ashique_admin_app/view/screen/home/monthEarnLine.dart';
+import 'package:ashique_admin_app/view/dashboard/home/categories.dart';
+import 'package:ashique_admin_app/view/dashboard/home/homeBestSellingSilder.dart';
+import 'package:ashique_admin_app/view/dashboard/home/monthEarnLine.dart';
+import 'package:ashique_admin_app/view/dashboard/home/salesRate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +25,26 @@ class HomeContent extends StatelessWidget {
         physics: BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
+            leadingWidth: Get.width*.3,
+            leading: Row(
+              children: [
+                IconButton(
+                  style: IconButton.styleFrom(
+                    padding: EdgeInsetsDirectional.zero
+                  ),
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.mail,
+                      color: Theme.of(context).primaryColor,
+                    )),
+                IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.shopping_cart,
+                      color: Theme.of(context).primaryColor,
+                    )),
+              ],
+            ),
             foregroundColor: Colors.white,
             surfaceTintColor: Colors.white,
             systemOverlayStyle: SystemUiOverlayStyle(
@@ -52,25 +74,6 @@ class HomeContent extends StatelessWidget {
           ),
           SliverList(
               delegate: SliverChildListDelegate([
-            // HomeSlider
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 8.0, bottom: 8),
-                  child: Text(
-                    'Best Sellings',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const HomeSlider(),
-            //end
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -111,7 +114,7 @@ class HomeContent extends StatelessWidget {
                   ],
                 ),
               ],
-            )
+            ),
           ])),
           SliverGrid(
               delegate: SliverChildBuilderDelegate(
@@ -123,11 +126,11 @@ class HomeContent extends StatelessWidget {
                           horizontal: 12.0, vertical: 6),
                       decoration: BoxDecoration(
                           color:
-                              Theme.of(context).primaryColor.withOpacity(.05),
+                              Theme.of(context).primaryColor.withOpacity(.01),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: Theme.of(context).primaryColor,
-                            width: 1,
+                            width: .5,
                           )),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -155,68 +158,7 @@ class HomeContent extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Opacity(
-                      opacity: .1,
-                      child: Container(
-                        height: 30,
-                        width: 40,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(6),
-                              bottomRight: Radius.circular(20),
-                            )),
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      child: Opacity(
-                        opacity: .1,
-                        child: Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.only(
-                                // topRight: Radius.circular(60),
-                                bottomLeft: Radius.circular(60),
-                              )),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      child: Opacity(
-                        opacity: .1,
-                        child: Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(60),
-                                // bottomLeft: Radius.circular(60),
-                              )),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Opacity(
-                        opacity: .1,
-                        child: Container(
-                          height: 30,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(6),
-                              )),
-                        ),
-                      ),
-                    ),
+
                   ],
                 ),
               ),
@@ -228,7 +170,6 @@ class HomeContent extends StatelessWidget {
               )),
           SliverList(
               delegate: SliverChildListDelegate([
-            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -245,7 +186,7 @@ class HomeContent extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    _homeShortcutAddDialog(context,homeController);
+                    _homeShortcutAddDialog(context, homeController);
                   },
                   icon: Icon(
                     CupertinoIcons.add,
@@ -301,6 +242,70 @@ class HomeContent extends StatelessWidget {
                 itemCount: 6,
               ),
             ),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    'Your Categories',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    CupertinoIcons.add,
+                  ),
+                )
+              ],
+            ),
+            CategoriesHome(),
+
+            SizedBox(height: 10),
+            // HomeSlider
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 8.0, bottom: 8),
+                  child: Text(
+                    'Sales Rate',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SalesRate(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 8.0, bottom: 8),
+                  child: Text(
+                    'Best Selling',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const HomeSlider(),
+            //end
+            SizedBox(height: 10),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -334,10 +339,10 @@ class HomeContent extends StatelessWidget {
       context: context,
       builder: (context) => Container(
         padding: EdgeInsets.all(10),
-        height: Get.height*.6,
+        height: Get.height * .6,
         child: ListView.builder(
             itemBuilder: (context, index) =>
-                manageTitle(homeController, context, index,isCheck: index<4),
+                manageTitle(homeController, context, index, isCheck: index < 4),
             itemCount: homeController.manageGrid.length),
       ),
     );

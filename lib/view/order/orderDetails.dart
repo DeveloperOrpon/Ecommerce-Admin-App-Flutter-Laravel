@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../helper/helper.dart';
 import '../widget/statusChip.dart';
 
 class OrderDetails extends StatelessWidget {
@@ -48,7 +49,7 @@ class OrderDetails extends StatelessWidget {
               actions: [
                 TextButton(
                     onPressed: () {
-                      _deleteDialog(context);
+                      deleteDialog(context,onTap: (){});
                     },
                     child: Text(
                       "Delete",
@@ -369,30 +370,7 @@ class OrderDetails extends StatelessWidget {
     );
   }
 
-  _deleteDialog(BuildContext context) {
-    showCupertinoModalPopup<void>(
-        context: context,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-              title: const Text('Alert'),
-              content: const Text('Are you sure want to delete'),
-              actions: <CupertinoDialogAction>[
-                CupertinoDialogAction(
-                  isDefaultAction: true,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('No'),
-                ),
-                CupertinoDialogAction(
-                  isDestructiveAction: true,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Yes'),
-                ),
-              ],
-            ));
-  }
+
 }
 orderDetailsTile(String name, String value) {
   return Padding(

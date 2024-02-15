@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -60,4 +61,30 @@ startLoading(){
       size: 40,
     ),
   ));
+}
+
+deleteDialog(BuildContext context,{required Function onTap}) {
+  showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Alert'),
+        content: const Text('Are you sure want to delete'),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('No'),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              onTap();
+              Navigator.pop(context);
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ));
 }

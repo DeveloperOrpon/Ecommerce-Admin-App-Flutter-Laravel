@@ -1,53 +1,45 @@
-import 'package:ashique_admin_app/view/screen/category/addCategory.dart';
-import 'package:ashique_admin_app/view/widget/categoryTile.dart';
 import 'package:ashique_admin_app/view/widget/productItem.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CategoryInfo extends StatelessWidget {
-  const CategoryInfo({super.key});
+import '../../../config/textStyle.dart';
+import '../../../controller/productController.dart';
+import 'addProduct.dart';
+
+class ProductInfo extends StatelessWidget {
+  const ProductInfo({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final productController = Get.put(ProductController());
     return Container(
-      color: Colors.grey.shade100,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100
+      ),
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          ListView(
-            physics: BouncingScrollPhysics(),
-            children: [
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-              CategoryTile(),
-            ],
-          ),
+          ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: 10,
+              itemBuilder: (context, index) => const ProductItem()),
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: CupertinoButton(
               color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomRight: Radius.circular(10),
                 topLeft: Radius.circular(10),
               ),
               child: Text(
-                "Add New Category",
+                "Add New Product",
                 style: TextStyle(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     fontSize: 14),
               ),
               onPressed: () {
-                Get.to(AddCategory(), transition: Transition.fadeIn);
+                Get.to(AddProduct(), transition: Transition.fadeIn);
               },
             ),
           )
