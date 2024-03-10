@@ -49,7 +49,7 @@ Route<Object?> infoWithImageDialog(BuildContext context, Object? arguments) {
 }
 
 @pragma('vm:entry-point')
-Route<Object?> deleteConfirmDialog(BuildContext context, Object? arguments) {
+Route<Object?> deleteConfirmDialog(BuildContext context, Object? arguments,Function onTap) {
   return CupertinoDialogRoute<void>(
     context: context,
     builder: (BuildContext context) {
@@ -59,6 +59,7 @@ Route<Object?> deleteConfirmDialog(BuildContext context, Object? arguments) {
         actions: <Widget>[
           CupertinoDialogAction(
             onPressed: () {
+              onTap();
               Navigator.pop(context);
             },
             child: const Text('Yes'),

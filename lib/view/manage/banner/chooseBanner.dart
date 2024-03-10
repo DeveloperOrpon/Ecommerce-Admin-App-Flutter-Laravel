@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../config/appConst.dart';
+import '../../../controller/bannerController.dart';
 
 class ChooseBanner extends StatelessWidget {
   static const String routeName = 'chooseBanner';
@@ -13,6 +14,7 @@ class ChooseBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bannerController=Get.put(BannerController());
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(

@@ -15,21 +15,9 @@ class _CustomSwitchState extends State<CustomSwitch> {
   bool value = true;
 
   Future<bool> _getFuture() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
+    widget.onTap!();
     return !value;
-  }
-
-  @override
-  void initState() {
-    Future.delayed(
-      Duration.zero,
-      () {
-        setState(() {
-          value = widget.value;
-        });
-      },
-    );
-    super.initState();
   }
 
   @override
@@ -39,10 +27,10 @@ class _CustomSwitchState extends State<CustomSwitch> {
       width: 55,
       thumbSizeRatio: .9,
       spinStrokeWidth: 1,
-      value: value,
+      value: widget.value,
       future: _getFuture,
       onChange: (v) {
-        value = v;
+        // widget.value = v;
         print('Value changed to $v');
         setState(() {});
       },

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ashique_admin_app/helper/helper.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/cupertino.dart';
@@ -237,14 +239,14 @@ String _getValueText(
   return valueText;
 }
 
-showSingleDatePicker(BuildContext context,String title,Function onTap,{Color? color}){
+showSingleDatePicker(BuildContext context,String title,Function(DateTime?) onTap,{Color? color}){
   return InkWell(
     onTap: () async {
-      await showDatePicker(context: context, firstDate: DateTime.now(), lastDate: DateTime(2100));
+      DateTime? pickDate=await showDatePicker(context: context, firstDate: DateTime.now(), lastDate: DateTime(2100),initialDate: DateTime.now());
+      onTap(pickDate);
     },
     child: FormBuilderTextField(
       enabled: false,
-      obscureText: true,
       name: 'Code',
       decoration: decoration(
           fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
@@ -253,8 +255,6 @@ showSingleDatePicker(BuildContext context,String title,Function onTap,{Color? co
           iconData: Icons.date_range,
           hideText: true),
       validator: FormBuilderValidators.compose([
-        FormBuilderValidators.required(),
-        FormBuilderValidators.maxWordsCount(8),
       ]),
       autofillHints: const [AutofillHints.email],
       style: const TextStyle(fontSize: 14),

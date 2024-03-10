@@ -1,7 +1,10 @@
+
+import 'package:ashique_admin_app/model/productRes.dart';
 import 'package:ashique_admin_app/view/widget/productItem.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 
 class SellerProducts extends StatelessWidget {
   const SellerProducts({super.key});
@@ -65,7 +68,7 @@ class SellerProducts extends StatelessWidget {
             ),
             SliverList(delegate: SliverChildBuilderDelegate((context, index) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: const ProductItem(),
+              child:  ProductItem(ProductModel()),
             ),childCount: 10))
           ],
         ),

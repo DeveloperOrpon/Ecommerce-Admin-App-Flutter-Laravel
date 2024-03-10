@@ -27,8 +27,11 @@ class RedirectScreen extends StatelessWidget {
     Future.delayed(
       const Duration(seconds: 1),
       () async {
+
         String? jwt=await LocalStorage.getJWT();
         String? userMapString=await LocalStorage.getUserInformation();
+        printLog("userMapString ${userMapString.runtimeType}");
+        printLog("userMapString ${jwt}");
         if(jwt==null || jwt.isEmpty) {
           Get.offAll(const LoginScreen(),
             transition: Transition.rightToLeftWithFade);
@@ -38,6 +41,7 @@ class RedirectScreen extends StatelessWidget {
           printLog("userMapString ${jwt}");
           AdminRes adminRes=AdminRes.fromJson(userMap);
           authController.adminRes.value=adminRes;
+          await authController.getOverView();
           Get.offAll(const HomeScreen(),transition: Transition.cupertino,);
         }
       },

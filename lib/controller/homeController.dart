@@ -1,3 +1,4 @@
+import 'package:ashique_admin_app/controller/AuthenticationController.dart';
 import 'package:ashique_admin_app/view/manage/banner/chooseBanner.dart';
 import 'package:ashique_admin_app/view/manage/shipping/shippingMethod.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gallery_3d/gallery3d.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../view/manage/MailConfig/MailConfig.dart';
 import '../view/manage/Sellers/Sellers.dart';
 import '../view/manage/SocialMedia/SocialMedia.dart';
@@ -24,7 +26,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   RxInt homePageIndex = RxInt(0);
   RxInt orderPageIndex = RxInt(0);
   PageController pageController = PageController(initialPage: 0);
-  late Gallery3DController controller;
+  Rxn<Gallery3DController> controller=Rxn<Gallery3DController>();
   late TabController tabControllerOrder;
 
   List demoImages = [
@@ -186,8 +188,22 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   @override
   void onInit() {
     tabControllerOrder = TabController(length: 4, vsync: this);
-    controller = Gallery3DController(
-        itemCount: 9, autoLoop: true, ellipseHeight: 0, minScale: 0.4);
     super.onInit();
+  }
+
+  RefreshController refreshControllerHome =
+      RefreshController(initialRefresh: false);
+
+  void onRefreshHome() async {
+    final authController=Get.put(AuthenticationController());
+    authController.overViewModel.value=null;
+    await authController.getOverView();
+    refreshControllerHome.refreshCompleted();
+  }
+
+  void onLoadingHome() async {
+    await Future.delayed(Duration(seconds: 2));
+
+    refreshControllerHome.loadComplete();
   }
 }

@@ -14,15 +14,18 @@ import '../model/productRes.dart';
 class PaymentController extends GetxController {
   late DIO.Dio dio;
   RefreshController refreshController =
-  RefreshController(initialRefresh: false);
-  void onRefresh() async{
+      RefreshController(initialRefresh: false);
+
+  void onRefresh() async {
     await Future.delayed(Duration(milliseconds: 1000));
     refreshController.refreshCompleted();
   }
-  void onLoading() async{
+
+  void onLoading() async {
     await Future.delayed(Duration(milliseconds: 1000));
     refreshController.loadComplete();
   }
+
   @override
   onInit() {
     DIO.BaseOptions options = DIO.BaseOptions(
@@ -35,5 +38,19 @@ class PaymentController extends GetxController {
         requestRetrier:
             ConnectiveRequestRetrier(connectivity: Connectivity(), dio: dio)));
     super.onInit();
+  }
+
+  Future<bool>updatePaymentMethod(Map<String, dynamic> map,String title) async {
+    String url = "$PAYMENT_METHOD_URL/$title";
+    try {
+
+      final DIO.Response response = await dio.post(url, data: map);
+      printLog("${response.requestOptions.baseUrl}${response.requestOptions.path}---\n ${response.requestOptions.data}");
+      return true;
+    } on DIO.DioException catch (e) {
+      log(e.toString());
+      log(e.requestOptions.baseUrl + e.requestOptions.path);
+      return false;
+    }
   }
 }

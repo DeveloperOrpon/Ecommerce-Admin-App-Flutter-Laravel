@@ -1,7 +1,10 @@
+import 'package:ashique_admin_app/helper/helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
+import '../../../controller/productController.dart';
 import '../../../extend/sliverAppBarDelegate.dart';
 import '../category/category.dart';
 import 'ProductInfo.dart';
@@ -22,7 +25,7 @@ class _ProductScreenState extends State<ProductScreen>
     super.initState();
     _tabController = TabController(initialIndex: 0, length: 2, vsync: this);
   }
-
+  final productController=Get.put(ProductController());
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -47,7 +50,19 @@ class _ProductScreenState extends State<ProductScreen>
               fontWeight: FontWeight.normal,
             ),),
             actions: [
-              IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.search))
+              IconButton(onPressed: () async {
+                startLoading();
+                productController.allCategoryList.value=[];
+               productController.getAllCategories().then((value){
+                 if(value){
+                   Get.back();
+                   showSuccessToastTop('Information', 'Products & Categories Update Latest Information', context);
+                 }else{
+                   Get.back();
+                   showErrorToast("Warning", 'Something Error When try Reload', context);
+                 }
+               });
+              }, icon: const Icon(CupertinoIcons.refresh))
             ],
 
             bottom: PreferredSize(

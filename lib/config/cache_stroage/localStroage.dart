@@ -23,9 +23,14 @@ class LocalStorage{
     return localBD.setString(USER_JWT, value);
   }
  static Future<String?> getJWT() async {
-    final localBD=await SharedPreferences.getInstance();
-    printLog("${localBD.getString(USER_JWT)}");
-    return localBD.getString(USER_JWT);
+   try{
+     final localBD=await SharedPreferences.getInstance();
+     printLog("${localBD.getString(USER_JWT)}");
+     return localBD.getString(USER_JWT);
+   }catch (err){
+     printLog("shared_preferences: $err");
+     return null;
+   }
   }
 
 }

@@ -1,6 +1,9 @@
 import 'dart:developer';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:ashique_admin_app/controller/AuthenticationController.dart';
+import 'package:ashique_admin_app/helper/helper.dart';
+import 'package:ashique_admin_app/model/SupportTicketRes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +14,12 @@ import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../config/refresh.dart';
 import '../../../controller/supportController.dart';
+import '../../../model/messages.dart';
 
 class SupportReplies extends StatefulWidget {
-  const SupportReplies({super.key});
+  final SupportTicketModel supportTicketModel;
+
+  const SupportReplies({super.key, required this.supportTicketModel});
 
   @override
   State<SupportReplies> createState() => _SupportRepliesState();
@@ -21,14 +27,45 @@ class SupportReplies extends StatefulWidget {
 
 class _SupportRepliesState extends State<SupportReplies> {
   final supportController = Get.put(SupportController());
+  final authController = Get.put(AuthenticationController());
+  List<SupportMessageModel> ticketMessage = [];
+  int page = 1;
 
   @override
   void initState() {
+    getReplies();
     super.initState();
+  }
+
+  getReplies() {
+    supportController
+        .getSupportTicketCov(
+            widget.supportTicketModel.id.toString(), page.toString())
+        .then((value) {
+      setState(() {
+        ticketMessage.addAll(value);
+        printLog('Replies: ${ticketMessage.length}');
+      });
+    });
   }
 
   TextEditingController messageController = TextEditingController();
   final focusNode = FocusNode();
+  RefreshController refreshControllerReplies =
+  RefreshController(initialRefresh: false);
+
+  void onRefreshReplies() async {
+    ticketMessage=[];
+    page=1;
+    await getReplies();
+    refreshControllerReplies.refreshCompleted();
+  }
+
+  void onLoadingReplies() async {
+    page++;
+    await getReplies();
+    refreshControllerReplies.loadComplete();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +81,9 @@ class _SupportRepliesState extends State<SupportReplies> {
           statusBarBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.dark,
         ),
-        title: const Text(
-          'Ticket Replies #12333',
-          style: TextStyle(
+        title: Text(
+          'Ticket Replies #${widget.supportTicketModel.id}',
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.normal,
           ),
@@ -54,9 +91,9 @@ class _SupportRepliesState extends State<SupportReplies> {
         actions: [
           TextButton(
             onPressed: () {},
-            child: const Text(
-              "Close",
-              style: TextStyle(
+            child: Text(
+              "${widget.supportTicketModel.status}",
+              style: const TextStyle(
                 color: Colors.red,
               ),
             ),
@@ -72,11 +109,12 @@ class _SupportRepliesState extends State<SupportReplies> {
             enablePullUp: true,
             header: refreshLoading(context),
             footer: customFooter,
-            controller: supportController.refreshControllerReplies,
-            onRefresh: supportController.onRefreshReplies,
-            onLoading: supportController.onLoadingReplies,
+            controller: refreshControllerReplies,
+            onRefresh: onRefreshReplies,
+            onLoading: onLoadingReplies,
             child: ListView(
               physics: const BouncingScrollPhysics(),
+              reverse: true,
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 8.0, left: 12),
@@ -93,8 +131,9 @@ class _SupportRepliesState extends State<SupportReplies> {
                     ],
                   ),
                 ),
-                ...List.generate(3, (index) => index).map((message) =>
-                    _messageTile("Message $message", message % 2 == 0))
+                ...ticketMessage.map((message) => _messageTile(
+                    message.adminMessage ?? message.customerMessage,
+                    message.adminMessage == null))
               ],
             ),
           )),
@@ -111,7 +150,8 @@ class _SupportRepliesState extends State<SupportReplies> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical:10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 10),
                     child: FormBuilderTextField(
                       focusNode: focusNode,
                       onChanged: (value) {},
@@ -151,7 +191,26 @@ class _SupportRepliesState extends State<SupportReplies> {
                         Expanded(
                           child: CupertinoButton(
                             disabledColor: Colors.grey,
-                            onPressed: () {},
+                            onPressed: () {
+                              if (messageController.text.trim().isNotEmpty) {
+                                startLoading();
+                                supportController
+                                    .sendSupportTicketCov(
+                                        widget.supportTicketModel.id.toString(),
+                                        authController.adminRes.value!.user!.id
+                                            .toString(),
+                                        messageController.text
+                                            .trim()
+                                            .toString())
+                                    .then((value) async {
+                                  messageController.clear();
+                                  ticketMessage = [];
+                                  await getReplies();
+                                  Get.back();
+
+                                });
+                              }
+                            },
                             color: Theme.of(context).primaryColor,
                             child: const Text(
                               "Send",
@@ -180,11 +239,11 @@ class _SupportRepliesState extends State<SupportReplies> {
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Column(
-        crossAxisAlignment:  isUser ?CrossAxisAlignment.end:CrossAxisAlignment.start,
+        crossAxisAlignment:
+            isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(

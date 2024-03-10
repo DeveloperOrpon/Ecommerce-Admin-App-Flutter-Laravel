@@ -1,3 +1,6 @@
+import 'package:ashique_admin_app/controller/dealController.dart';
+import 'package:ashique_admin_app/helper/helper.dart';
+import 'package:ashique_admin_app/model/flashSaleRes.dart';
 import 'package:ashique_admin_app/view/manage/deals/flashDeal/addFlashDeal.dart';
 import 'package:ashique_admin_app/view/manage/deals/flashDeal/addProductFlashDeal.dart';
 import 'package:ashique_admin_app/view/widget/productSwitch.dart';
@@ -8,11 +11,15 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../config/api/api_route.dart';
+import '../../../widget/networkImage.dart';
+
 class FlashDeals extends StatelessWidget {
   const FlashDeals({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final dealController = Get.put(DealController());
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -43,27 +50,24 @@ class FlashDeals extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14.0),
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverList(
-              delegate: SliverChildListDelegate([
-                _flashTitle(context, 1),
-                _flashTitle(context, 2),
-                _flashTitle(context, 3),
-                _flashTitle(context, 4),
-                _flashTitle(context, 4),
-                _flashTitle(context, 4),
-                _flashTitle(context, 4),
-              ]),
-            )
-          ],
-        ),
+        child: Obx(() {
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (context, index) => _flashTitle(context, index,
+                        dealController.allFlashDeal.value[index]),
+                    childCount: dealController.allFlashDeal.length),
+              )
+            ],
+          );
+        }),
       ),
     );
   }
 
-  _flashTitle(BuildContext context, int index) {
+  _flashTitle(BuildContext context, int index, FlashDealModel dealModel) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 7),
       padding: EdgeInsets.all(4),
@@ -85,22 +89,22 @@ class FlashDeals extends StatelessWidget {
                   topLeft: Radius.circular(10),
                   bottomLeft: Radius.circular(10),
                 ),
-                child: Image.asset(
-                  'assets/logo/banner.jpg',
+                child: NetworkImagePreview(
+                  url: FLASHDEAL_IMAGE_URL + dealModel.banner.toString(),
                   height: 120,
                   width: Get.width * .5,
-                  fit: BoxFit.cover,
                 ),
               ),
               Container(
                 height: 120,
                 width: Get.width * .5,
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(.3)
-                ),
+                decoration: BoxDecoration(color: Colors.black.withOpacity(.3)),
                 child: IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.edit,color: Colors.white,),
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
                 ),
               )
             ],
@@ -112,7 +116,7 @@ class FlashDeals extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'FlashDeal 2025',
+                '${dealModel.title}',
                 maxLines: 2,
                 style: GoogleFonts.fraunces(
                     fontSize: 16, fontWeight: FontWeight.bold),
@@ -132,7 +136,7 @@ class FlashDeals extends StatelessWidget {
                         color: Colors.white,
                       )),
                   TextSpan(
-                      text: '2024-01-02 00:00:00',
+                      text: '${dateFormatOrder(dealModel.startDate.toString())}',
                       style: GoogleFonts.roboto(
                         fontSize: 10,
                         color: Colors.white,
@@ -155,7 +159,7 @@ class FlashDeals extends StatelessWidget {
                         color: Colors.white,
                       )),
                   TextSpan(
-                      text: '2024-01-02 00:00:00',
+                      text: '${dateFormatOrder(dealModel.endDate.toString())}',
                       style: GoogleFonts.roboto(
                         fontSize: 10,
                         color: Colors.white,
@@ -167,7 +171,7 @@ class FlashDeals extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      Get.to(AddProductFlashDeal(),
+                      Get.to(AddProductFlashDeal(id: dealModel.id.toString(),),
                           transition: Transition.fadeIn);
                     },
                     child: Container(
@@ -186,7 +190,9 @@ class FlashDeals extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const CustomSwitch(),
+                   CustomSwitch(
+                    value:dealModel.status==1 ,
+                  ),
                 ],
               )
             ],

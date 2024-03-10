@@ -1,3 +1,4 @@
+import 'package:ashique_admin_app/model/orderRes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,7 +67,7 @@ class SellerOrders extends StatelessWidget {
             ),
             SliverList(delegate: SliverChildBuilderDelegate((context, index) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: const OrderTile(),
+              child: OrderTile(OrderModel()),
             ),childCount: 10))
           ],
         ),

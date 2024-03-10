@@ -1,28 +1,32 @@
 import 'package:ashique_admin_app/config/appConst.dart';
+import 'package:ashique_admin_app/model/Category.dart';
 import 'package:ashique_admin_app/view/widget/productSwitch.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_menu/expandable_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../config/api/api_route.dart';
 import '../../config/textStyle.dart';
 
 class CategoryTile extends StatelessWidget {
-  const CategoryTile({super.key});
+  final CategoryModel categoryModel;
+
+  const CategoryTile(this.categoryModel, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 130,
-      padding: EdgeInsets.all(6),
-      margin: EdgeInsets.only(left: 12, right: 12, bottom: 5),
+      padding: const EdgeInsets.all(6),
+      margin: const EdgeInsets.only(left: 12, right: 12, bottom: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Theme.of(context).primaryColor.withOpacity(.4),
-          width: .4,
-        )
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Theme.of(context).primaryColor.withOpacity(.4),
+            width: .4,
+          )),
       child: Column(
         children: [
           Stack(
@@ -38,11 +42,16 @@ class CategoryTile extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8)),
-                    child: Image.asset(appLogo),
+                    child: CachedNetworkImage(
+                      imageUrl: "$CATEGORY_IMAGE_URL${categoryModel.icon}",
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              const CupertinoActivityIndicator(),
+                      errorWidget: (context, url, error) =>
+                          Image.asset(appLogo),
+                    ),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 10),
                   Expanded(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,20 +61,22 @@ class CategoryTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              child: Text("Category Name",
+                              child: Text("${categoryModel.name}",
                                   style: productTextStyle)),
-
                         ],
                       ),
                       Text(
-                        "1 Items Listed",
+                        "${categoryModel.count} Items Listed",
                         style: productTextStyle,
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              child: Text("Active",
+                              child: Text(
+                                  categoryModel.active!
+                                      ? 'Active'
+                                      : 'In-Active',
                                   style: productTextStyle.copyWith(
                                       color: Colors.green,
                                       fontWeight: FontWeight.bold))),
@@ -75,22 +86,22 @@ class CategoryTile extends StatelessWidget {
                   ))
                 ],
               ),
-        const CustomSwitch(),
+              CustomSwitch(value: categoryModel.active ?? false),
               Positioned(
                   top: -12.0,
                   left: 0.0,
                   right: -8.0,
                   child: Row(
                     children: [
-                      Spacer(),
+                      const Spacer(),
                       Expanded(
                         child: ExpandableMenu(
                           width: 40.0,
                           height: 40.0,
                           backgroundColor: Colors.transparent,
-                          iconColor:  Theme.of(context).primaryColor,
+                          iconColor: Theme.of(context).primaryColor,
                           itemContainerColor: Theme.of(context).primaryColor,
-                          items: [
+                          items: const [
                             Icon(
                               Icons.delete,
                               color: Colors.white,
@@ -114,8 +125,8 @@ class CategoryTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.share, color: Theme.of(context).primaryColor),
-                  SizedBox(width: 6),
-                  Text("Share Category")
+                  const SizedBox(width: 6),
+                  const Text("Share Category")
                 ],
               )
             ],

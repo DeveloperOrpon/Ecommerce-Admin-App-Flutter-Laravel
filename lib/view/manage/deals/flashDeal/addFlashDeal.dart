@@ -163,13 +163,13 @@ class AddFlashDeal extends StatelessWidget {
                       child: Padding(
                         padding:
                         const EdgeInsets.symmetric(horizontal: 6.0, vertical: 7),
-                        child: showSingleDatePicker(context, "Start Date", () {}),
+                        child: showSingleDatePicker(context, "Start Date", (date) {}),
                       )),
                   Expanded(
                       child: Padding(
                         padding:
                         const EdgeInsets.symmetric(horizontal: 6.0, vertical: 7),
-                        child: showSingleDatePicker(context, "End Date", () {}),
+                        child: showSingleDatePicker(context, "End Date", (date) {}),
                       )),
                 ],
               ),

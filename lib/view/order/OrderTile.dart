@@ -1,21 +1,28 @@
+import 'package:ashique_admin_app/model/orderRes.dart';
 import 'package:ashique_admin_app/view/order/orderDetails.dart';
+import 'package:ashique_admin_app/view/widget/networkImage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
+import '../../config/api/api_route.dart';
 import '../../config/appConst.dart';
 import '../../controller/orderController.dart';
+import '../../helper/orderHelper.dart';
 import '../widget/statusChip.dart';
 
 class OrderTile extends StatelessWidget {
-  const OrderTile({super.key});
+  final OrderModel orderModel;
+
+  const OrderTile(this.orderModel, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return orderModel.lineItems==null?const Center(): InkWell(
       onTap: () {
-        Get.to(const OrderDetails(),transition: Transition.upToDown);
+        Get.to( OrderDetails(orderModel: orderModel,), transition: Transition.upToDown);
       },
       child: Stack(
         children: [
@@ -37,8 +44,9 @@ class OrderTile extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        appLogo,
+                      NetworkImagePreview(
+                        url: PRODUCT_IMAGE_URL +
+                            orderModel.lineItems![0].featuredImage.toString(),
                         width: 85,
                         height: 100,
                       ),
@@ -52,30 +60,36 @@ class OrderTile extends StatelessWidget {
                           child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
-                            'Order Title will be there with order name Order Title will be there with order name',
+                            orderModel.lineItems![0].name.toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
                           ),
-                          const Text(
-                            '#1092 . Feb 2,2024 . Orpon Hasan',
+                          Text(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            '#${orderModel.id} • ${DateFormat('MMM d, yyyy').format(DateTime.parse(orderModel.dateCreated.toString()))} • ${orderModel.customer!.name}',
                             style:
                                 TextStyle(fontSize: 12, color: Colors.blueGrey),
                           ),
-                          const Row(
+                           Row(
                             children: [
                               Icon(
                                 CupertinoIcons.location_solid,
                                 size: 13,
                               ),
-                              Text(
-                                'Shewrapara Mirpur -10  Dhaka Bangladesh',
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.blueGrey),
+                              Expanded(
+                                child: Text(
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  '${orderModel.shipping!.fullAddress.toString()}',
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.blueGrey),
+                                ),
                               ),
                             ],
                           ),
@@ -84,9 +98,9 @@ class OrderTile extends StatelessWidget {
                             child: Row(
                               children: [
                                 Text(
-                                  'BDT 256.00',
+                                  '$currency ${orderModel.total}',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Theme.of(context).primaryColor,
                                   ),
@@ -101,8 +115,8 @@ class OrderTile extends StatelessWidget {
                                       width: .5,
                                     ),
                                   ),
-                                  child: const Text(
-                                    '1 Qty',
+                                  child:  Text(
+                                    '${orderModel.lineItems!.length} Qty',
                                     style: TextStyle(
                                       fontSize: 10,
                                     ),
@@ -116,23 +130,23 @@ class OrderTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Expanded(
+                 Expanded(
                   child: Row(
                     children: [
                       Expanded(
                           child: StatusChip(
                               color: Colors.purple,
-                              title: 'Pending',
+                              title: '${orderModel.status?.capitalize}',
                               iconData: Icons.shopping_bag_outlined)),
                       Expanded(
                           child: StatusChip(
                               color: Colors.amber,
-                              title: 'Waiting',
+                              title: '${orderModel.deliveryStatus!.capitalize}',
                               iconData: Icons.garage)),
                       Expanded(
                           child: StatusChip(
                               color: Colors.blue,
-                              title: 'Un-Paid',
+                              title: '${orderModel.paymentStatus!.capitalize}',
                               iconData: Icons.payment)),
                     ],
                   ),
@@ -144,7 +158,7 @@ class OrderTile extends StatelessWidget {
             right: 0,
             child: InkWell(
               onTap: () {
-                _showBottomSheetDialog(context);
+                showBottomSheetDialog(context,orderModel);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -168,255 +182,6 @@ class OrderTile extends StatelessWidget {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  _showBottomSheetDialog(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: CupertinoColors.white,
-      context: context,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-            color: CupertinoColors.white,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(40),
-              topLeft: Radius.circular(40),
-            )),
-        height: Get.height * .4,
-        padding: EdgeInsets.all(14),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                "Choose Status Update",
-                style: GoogleFonts.alef(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
-              ),
-            ),
-            Divider(),
-            SizedBox(height: 10),
-            _tile('Order Status', () {
-              _showOrderStatusDialog(context);
-            }),
-            _tile('Shipping Status', () {
-              _showShippingStatusDialog(context);
-            }),
-            _tile('Payment Status', () {
-              _showPaymentStatusDialog(context);
-            }),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: CupertinoButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  color: Theme.of(context).primaryColor,
-                  child: const Text(
-                    'UPDATE STATUS',
-                    style: TextStyle(color: CupertinoColors.white),
-                  )),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  _tile(String title, Function onTileTap,
-      {bool showRadioButton = false,
-      bool radioButtonValue = false,
-      Function? radioButton}) {
-    return InkWell(
-      onTap: () {
-        onTileTap();
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 10),
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [
-            Expanded(child: Text(title)),
-            showRadioButton
-                ? Radio(
-                    value: title,
-                    groupValue: radioButtonValue,
-                    onChanged: radioButton!())
-                : const Icon(Icons.arrow_forward_ios_rounded)
-          ],
-        ),
-      ),
-    );
-  }
-
-  _showOrderStatusDialog(BuildContext context) {
-    final orderController = Get.put(OrderController());
-    showModalBottomSheet(
-      backgroundColor: CupertinoColors.white,
-      context: context,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-            color: CupertinoColors.white,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(40),
-              topLeft: Radius.circular(40),
-            )),
-        height: Get.height * .7,
-        padding: EdgeInsets.all(14),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                "Order Status",
-                style: GoogleFonts.alef(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
-              ),
-            ),
-            Divider(),
-            SizedBox(height: 10),
-            Expanded(
-                child: ListView.builder(
-              itemBuilder: (context, index) => _tile(
-                  '${orderController.orderStatus[index]}', () {},
-                  radioButton: () {},
-                  radioButtonValue: false,
-                  showRadioButton: true),
-              itemCount: orderController.orderStatus.length,
-            )),
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: CupertinoButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  color: Theme.of(context).primaryColor,
-                  child: const Text(
-                    'UPDATE STATUS',
-                    style: TextStyle(color: CupertinoColors.white),
-                  )),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-  _showShippingStatusDialog(BuildContext context) {
-    final orderController = Get.put(OrderController());
-    showModalBottomSheet(
-      backgroundColor: CupertinoColors.white,
-      context: context,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-            color: CupertinoColors.white,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(40),
-              topLeft: Radius.circular(40),
-            )),
-        height: Get.height * .7,
-        padding: EdgeInsets.all(14),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                "Shipping Status",
-                style: GoogleFonts.alef(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
-              ),
-            ),
-            Divider(),
-            SizedBox(height: 10),
-            Expanded(
-                child: ListView.builder(
-              itemBuilder: (context, index) => _tile(
-                  '${orderController.shippingStatus[index]}', () {},
-                  radioButton: () {},
-                  radioButtonValue: false,
-                  showRadioButton: true),
-              itemCount: orderController.shippingStatus.length,
-            )),
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: CupertinoButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  color: Theme.of(context).primaryColor,
-                  child: const Text(
-                    'UPDATE STATUS',
-                    style: TextStyle(color: CupertinoColors.white),
-                  )),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-  _showPaymentStatusDialog(BuildContext context) {
-    final orderController = Get.put(OrderController());
-    showModalBottomSheet(
-      backgroundColor: CupertinoColors.white,
-      context: context,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-            color: CupertinoColors.white,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(40),
-              topLeft: Radius.circular(40),
-            )),
-        height: Get.height * .7,
-        padding: EdgeInsets.all(14),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                "Payment Status",
-                style: GoogleFonts.alef(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
-              ),
-            ),
-            Divider(),
-            SizedBox(height: 10),
-            Expanded(
-                child: ListView.builder(
-              itemBuilder: (context, index) => _tile(
-                  '${orderController.paymentStatus[index]}', () {},
-                  radioButton: () {},
-                  radioButtonValue: false,
-                  showRadioButton: true),
-              itemCount: orderController.paymentStatus.length,
-            )),
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: CupertinoButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  color: Theme.of(context).primaryColor,
-                  child: const Text(
-                    'UPDATE STATUS',
-                    style: TextStyle(color: CupertinoColors.white),
-                  )),
-            )
-          ],
-        ),
       ),
     );
   }

@@ -112,29 +112,28 @@ class LoginScreen extends StatelessWidget {
                         ?.saveAndValidate() ??
                     false) {
                   if (true) {
-                    Get.to(HomeScreen(),transition: Transition.fadeIn);
-                    // startLoading();
-                    // log("${_formKey.currentState.value}")
-                    // authController
-                    //     .loginWithEmailPassword(
-                    //   authController.loginFormKey.currentState!.value['email'],
-                    //   authController
-                    //       .loginFormKey.currentState!.value['password'],
-                    //   context,
-                    // )
-                    //     .then((value) {
-                    //   Get.back();
-                    //   log("Method Value: $value");
-                    //   if (value) {
-                    //     showSuccessToastTop('Information',
-                    //         'Login Successfully Please Wait', context);
-                    //     Get.offAll(const HomeScreen(),
-                    //         transition: Transition.fadeIn);
-                    //   } else {
-                    //     showErrorToast(
-                    //         'Waring', 'Your Credential is invalid', context);
-                    //   }
-                    // });
+                    startLoading();
+                    log("${authController.loginFormKey.currentState}");
+                    authController
+                        .loginWithEmailPassword(
+                      authController.loginFormKey.currentState!.value['email'],
+                      authController
+                          .loginFormKey.currentState!.value['password'],
+                      context,
+                    )
+                        .then((value) {
+                      Get.back();
+                      log("Method Value: $value");
+                      if (value) {
+                        showSuccessToastTop('Information',
+                            'Login Successfully Please Wait', context);
+                        Get.offAll(const HomeScreen(),
+                            transition: Transition.fadeIn);
+                      } else {
+                        showErrorToast(
+                            'Waring', 'Your Credential is invalid', context);
+                      }
+                    });
                   }
                 }
                 debugPrint(

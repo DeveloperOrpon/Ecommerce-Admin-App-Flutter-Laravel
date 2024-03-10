@@ -1,28 +1,29 @@
-import 'package:ashique_admin_app/config/appConst.dart';
+import 'package:ashique_admin_app/config/api/api_route.dart';
 import 'package:ashique_admin_app/view/dashboard/products/productDetails.dart';
+import 'package:ashique_admin_app/view/widget/networkImage.dart';
 import 'package:ashique_admin_app/view/widget/productSwitch.dart';
 import 'package:expandable_menu/expandable_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:load_switch/load_switch.dart';
-import 'package:super_context_menu/super_context_menu.dart';
 
 import '../../config/textStyle.dart';
+import '../../model/productRes.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({super.key});
+  final ProductModel product;
+  const ProductItem(this.product, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(ProductDetails(), transition: Transition.fadeIn);
+        Get.to(ProductDetails(product), transition: Transition.fadeIn);
       },
       child: Container(
-        height: 140,
-        padding: EdgeInsets.all(8),
-        margin: EdgeInsets.only(left: 12, right: 12, bottom: 5),
+        height: 142,
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.only(left: 12, right: 12, bottom: 5),
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -41,20 +42,18 @@ class ProductItem extends StatelessWidget {
                   children: [
                     Container(
                       height: 80,
-                      width: 100,
+                      width: 80,
                       decoration: BoxDecoration(
                           color: Colors.grey.shade400,
                           borderRadius: BorderRadius.circular(8)),
-                      child: Image.asset(
-                        appLogo,
+                      child: NetworkImagePreview(
+                        url: PRODUCT_THUMBMAIL_IMAGE_URL +
+                            (product.thumbnail ?? ""),
                         width: 100,
                         height: 80,
-                        fit: BoxFit.cover,
                       ),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     Expanded(
                         child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,22 +63,30 @@ class ProductItem extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                                child: Text("Long T-shirt For Man",
-                                    style: productTextStyle)),
+                                child: Text("${product.name}",
+                                    maxLines: 2,
+
+                                    overflow: TextOverflow.ellipsis,
+                                    style: productTextStyle.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ))),
                           ],
                         ),
                         Text(
-                          "1 Piece",
-                          style: productTextStyle,
+                          "${product.currentStock} Piece",
+                          style: productTextStyle.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
                         ),
-                        Text("\$ 6000",
+                        Text("\$ ${product.price}",
                             style: productTextStyle.copyWith(
                                 color: Theme.of(context).primaryColor)),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                                child: Text("In Stock",
+                                child: Text("${product.stockStatus}",
                                     style: productTextStyle.copyWith(
                                         color: Colors.orange,
                                         fontWeight: FontWeight.bold))),
@@ -104,7 +111,7 @@ class ProductItem extends StatelessWidget {
                             backgroundColor: Colors.transparent,
                             iconColor: Theme.of(context).primaryColor,
                             itemContainerColor: Theme.of(context).primaryColor,
-                            items: [
+                            items: const [
                               Icon(
                                 Icons.delete,
                                 color: Colors.white,
@@ -123,12 +130,12 @@ class ProductItem extends StatelessWidget {
             Expanded(
                 child: Column(
               children: [
-                Divider(),
+                const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.share, color: Theme.of(context).primaryColor),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Text("Share Product")
                   ],
                 )

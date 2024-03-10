@@ -1,5 +1,7 @@
+import 'package:ashique_admin_app/config/api/api_route.dart';
 import 'package:ashique_admin_app/config/appConst.dart';
 import 'package:ashique_admin_app/helper/helper.dart';
+import 'package:ashique_admin_app/view/widget/networkImage.dart';
 import 'package:ashique_admin_app/view/widget/productSwitch.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,9 +10,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
+import '../../../model/Category.dart';
+import '../../../model/productRes.dart';
 
 class ProductDetails extends StatelessWidget {
-  const ProductDetails({super.key});
+  final ProductModel product;
+
+  const ProductDetails(this.product, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +34,8 @@ class ProductDetails extends StatelessWidget {
         ),
         automaticallyImplyLeading: false,
         // centerTitle: true,
-        title: const Text(
-          'Long T-shirt For Man',
+        title: Text(
+          '${product.name}',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.normal,
@@ -73,10 +81,10 @@ class ProductDetails extends StatelessWidget {
               style: TextStyle(fontSize: 15),
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              '	03:34 am, 10 Jun, 23',
+              '${DateFormat('hh:mm a, dd MMM, yy').format(DateTime.parse(product.createdAt.toString()))}',
               style: TextStyle(fontSize: 12),
             ),
           ),
@@ -85,7 +93,7 @@ class ProductDetails extends StatelessWidget {
             child: FormBuilderTextField(
               enabled: false,
               name: 'name',
-              initialValue: 'Long T-shirt For Man',
+              initialValue: '${product.name}',
               decoration: const InputDecoration(
                   labelText: 'Name', labelStyle: TextStyle(fontSize: 12)),
               validator: FormBuilderValidators.compose([
@@ -103,7 +111,7 @@ class ProductDetails extends StatelessWidget {
                   child: FormBuilderTextField(
                     enabled: false,
                     name: 'Selling',
-                    initialValue: '120.00',
+                    initialValue: '${product.salePrice}',
                     decoration: const InputDecoration(
                         labelText: 'Selling',
                         prefixIcon: Icon(CupertinoIcons.money_dollar),
@@ -119,7 +127,7 @@ class ProductDetails extends StatelessWidget {
                   child: FormBuilderTextField(
                     enabled: false,
                     name: 'Purchased',
-                    initialValue: '120.00',
+                    initialValue: '${product.regularPrice}',
                     decoration: const InputDecoration(
                         labelText: 'Purchased',
                         prefixIcon: Icon(CupertinoIcons.money_dollar),
@@ -135,7 +143,7 @@ class ProductDetails extends StatelessWidget {
                   child: FormBuilderTextField(
                     enabled: false,
                     name: 'Offered',
-                    initialValue: '120.00',
+                    initialValue: '${product.price}',
                     decoration: const InputDecoration(
                         labelText: 'Offered',
                         prefixIcon: Icon(CupertinoIcons.money_dollar),
@@ -165,11 +173,10 @@ class ProductDetails extends StatelessWidget {
                             Border.all(color: Colors.grey.shade500, width: .5)),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        appLogo,
+                      child: NetworkImagePreview(
+                        url: "$PRODUCT_THUMBMAIL_IMAGE_URL${product.thumbnail}",
                         width: 90,
                         height: 90,
-                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -189,7 +196,7 @@ class ProductDetails extends StatelessWidget {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                ...List.generate(4, (index) => 1).map((e) => Stack(
+                ...(product.images ?? []).map((e) => Stack(
                       alignment: Alignment.center,
                       children: [
                         Container(
@@ -202,11 +209,10 @@ class ProductDetails extends StatelessWidget {
                                   color: Colors.grey.shade500, width: .5)),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              appLogo,
+                            child: NetworkImagePreview(
+                              url: "$PRODUCT_IMAGE_URL${e}",
                               width: 90,
                               height: 90,
-                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
@@ -250,28 +256,33 @@ class ProductDetails extends StatelessWidget {
           ),
           SizedBox(
             height: 60,
-            child: ListView.builder(itemBuilder: (context, index) => ChipsChoice<String>.multiple(
-              alignment: WrapAlignment.center,
-              scrollPhysics: BouncingScrollPhysics(),
-              choiceCheckmark: true,
-              verticalDirection: VerticalDirection.down,
-              value: const ['Phone','TV','Electronic'],
-              onChanged: (val) {},
-              choiceStyle: C2ChipStyle.toned(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: (product.categories!).length,
+              itemBuilder: (context, index) =>
+                  ChipsChoice<CategoryModel>.multiple(
+                alignment: WrapAlignment.center,
+                scrollPhysics: BouncingScrollPhysics(),
+                choiceCheckmark: true,
+                verticalDirection: VerticalDirection.down,
+                value: (product.categories! ?? []),
+                onChanged: (val) {},
+                choiceStyle: C2ChipStyle.toned(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                ),
+                wrapped: true,
+                choiceItems: C2Choice.listFrom<CategoryModel, CategoryModel>(
+                  avatarImage: (index, item) => AssetImage(appLogo),
+                  source: (product.categories ?? []),
+                  value: (i, v) => v,
+                  label: (i, v) => v.name.toString(),
                 ),
               ),
-              wrapped: true,
-              choiceItems: C2Choice.listFrom<String, String>(
-                avatarImage: (index, item) => AssetImage(appLogo),
-                source: ['Phone','TV','Electronic'],
-                value: (i, v) => v,
-                label: (i, v) => v,
-              ),
-            ),),
+            ),
           ),
-          Divider(),
+          const Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -282,94 +293,58 @@ class ProductDetails extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            height: 40,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Colors : ',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: (product.attributes ?? [])
+                .map(
+                  (e) => Container(
+                    margin: EdgeInsets.all(5),
+                    height: 40,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            '${e.name} : ',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: (e.options??[]).length,
+                          itemBuilder: (context, index) => Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(right: 5),
+                            width: Get.width * .22,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 8),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                  width: .5,
+                                )),
+                            child: Text(
+                              e.name=='Color'?"${product.colors![index].name}":'${e.options![index]}',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ))
+                      ],
                     ),
                   ),
-                ),
-                Expanded(
-                    child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) => Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(right: 5),
-                    width: Get.width * .2,
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                          width: .5,
-                        )),
-                    child: Text(
-                      'Red',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ))
-              ],
-            ),
+                )
+                .toList(),
           ),
-          SizedBox(height: 5),
-          SizedBox(
-            height: 40,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Size : ',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                ),
-                Expanded(
-                    child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) => Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(right: 5),
-                    width: Get.width * .2,
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                          width: .5,
-                        )),
-                    child: Text(
-                      'L',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ))
-              ],
-            ),
-          ),
-          SizedBox(height: 5),
           Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),

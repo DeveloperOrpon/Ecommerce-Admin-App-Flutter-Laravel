@@ -19,13 +19,15 @@ class AddDealOfTheDay extends StatelessWidget {
   const AddDealOfTheDay({super.key});
 
   @override
-  Widget build(BuildContext context){
-  final dealController = Get.put(DealController());
+  Widget build(BuildContext context) {
+    final dealController = Get.put(DealController());
     Future.delayed(
       const Duration(milliseconds: 100),
-          () {
-        Navigator.of(context).restorablePush(infoWithImageDialog,
-            arguments:['assets/images/dealOfTheDay.png',"The feature empowers users to include specific items in time-limited promotions, enhancing sales and customer engagement through targeted marketing strategies and exclusive offers."]);
+      () {
+        Navigator.of(context).restorablePush(infoWithImageDialog, arguments: [
+          'assets/images/dealOfTheDay.png',
+          "The feature empowers users to include specific items in time-limited promotions, enhancing sales and customer engagement through targeted marketing strategies and exclusive offers."
+        ]);
       },
     );
     return Scaffold(
@@ -45,7 +47,6 @@ class AddDealOfTheDay extends StatelessWidget {
             fontWeight: FontWeight.normal,
           ),
         ),
-
       ),
       body: FormBuilder(
         key: dealController.uploadKey,
@@ -54,27 +55,33 @@ class AddDealOfTheDay extends StatelessWidget {
           child: ListView(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 6.0, vertical: 7),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6.0, vertical: 7),
                 child: FormBuilderDropdown<String>(
                   // initialValue: ,
                   name: 'Add new product',
                   validator: FormBuilderValidators.required(),
                   decoration:
-                  const InputDecoration(label: Text("Add new product")),
+                      const InputDecoration(label: Text("Add new product")),
                   onChanged: (value) {
                     // setState(() {
                     //   option = value;
                     // });
                   },
-                  items: List.generate(10, (index) => "$index").toList()
-                      .map(
-                          (e) => DropdownMenuItem(value: e, child: selectedProductTile(context,isShowDeleteButton: false)))
+                  items: List.generate(10, (index) => "$index")
+                      .toList()
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                    child: Text("data"),
+                            // child: selectedProductTile(context,
+                            //     isShowDeleteButton: false),
+                          ))
                       .toList(),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 7),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6.0, vertical: 7),
                 child: FormBuilderTextField(
                   obscureText: true,
                   name: 'Title',
@@ -107,10 +114,12 @@ class AddDealOfTheDay extends StatelessWidget {
                     topLeft: Radius.circular(10),
                   ),
                   onPressed: () {
-                    if (dealController.uploadKey.currentState!.saveAndValidate()) {
+                    if (dealController.uploadKey.currentState!
+                        .saveAndValidate()) {
                       if (true) {}
                     }
-                    debugPrint(dealController.uploadKey.currentState?.value.toString());
+                    debugPrint(dealController.uploadKey.currentState?.value
+                        .toString());
                   },
                   child: Text(
                     'Add DealOfTheDay'.toUpperCase(),

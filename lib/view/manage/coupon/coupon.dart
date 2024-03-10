@@ -1,6 +1,8 @@
 import 'package:ashique_admin_app/config/appConst.dart';
 import 'package:ashique_admin_app/config/refresh.dart';
+import 'package:ashique_admin_app/controller/couponController.dart';
 import 'package:ashique_admin_app/controller/paymentController.dart';
+import 'package:ashique_admin_app/model/couponRes.dart';
 import 'package:ashique_admin_app/view/widget/productSwitch.dart';
 import 'package:coupon_uikit/coupon_uikit.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +21,7 @@ class CouponScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final paymentController = Get.put(PaymentController());
+    final couponController = Get.put(CouponController());
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -48,65 +50,69 @@ class CouponScreen extends StatelessWidget {
           )
         ],
       ),
-      body: SmartRefresher(
-        physics: const BouncingScrollPhysics(),
-        enablePullDown: true,
-        enablePullUp: true,
-        header: refreshLoading(context),
-        footer: customFooter,
-        controller: paymentController.refreshController,
-        onRefresh: paymentController.onRefresh,
-        onLoading: paymentController.onLoading,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14.0),
-          child: CustomScrollView(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+        child: Obx(() {
+          return SmartRefresher(
             physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverList(
-                  delegate: SliverChildListDelegate([
+            enablePullDown: true,
+            enablePullUp: true,
+            header: refreshLoading(context),
+            footer: customFooter,
+            controller: couponController.refreshController,
+            onRefresh: couponController.onRefresh,
+            onLoading: couponController.onLoading,
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverList(
+                    delegate: SliverChildListDelegate([
+                  if (couponController.coupons.isEmpty)
                     const SizedBox(height: 30),
+                  if (couponController.coupons.isEmpty)
                     Image.asset(
                       couponImage,
                       height: Get.height * .3,
                       colorBlendMode: BlendMode.colorDodge,
                       // color: Theme.of(context).primaryColor,
                     ),
-                    // couponWidget(),
-                    const SizedBox(height: 25),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
-                      child: Row(
-                        children: [
-                          const CircleAvatar(radius: 8),
-                          SizedBox(width: 5),
-                          Text(
-                            "Available Discount Coupon",
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                  // couponWidget(),
+                  const SizedBox(height: 25),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
+                    child: Row(
+                      children: [
+                        const CircleAvatar(radius: 8),
+                        SizedBox(width: 5),
+                        Text(
+                          "Available Discount Coupon",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            // fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                  ])),
-              SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      (context, index) => couponWidget(context),
-                      childCount: 10)),
-
-            ],
-          ),
-        ),
+                  ),
+                  const SizedBox(height: 10),
+                ])),
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        (context, index) => couponWidget(context,couponController.coupons.value[index]),
+                        childCount: couponController.coupons.length)),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 
-  Widget couponWidget(BuildContext context) {
+  Widget couponWidget(BuildContext context, CouponModel couponModel) {
     Color primaryColor = Theme.of(context).primaryColor.withOpacity(.1);
-     Color secondaryColor = Colors.purple.withOpacity(.8);
+    Color secondaryColor =  Theme.of(context).primaryColor.withOpacity(.8);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: CouponCard(
@@ -118,10 +124,10 @@ class CouponScreen extends StatelessWidget {
         curveAxis: Axis.vertical,
         borderRadius: 5,
         firstChild: Container(
-          decoration:  BoxDecoration(
+          decoration: BoxDecoration(
             color: secondaryColor,
           ),
-          child:  Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
@@ -130,7 +136,7 @@ class CouponScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        '23% OFF',
+                        couponModel.discountType=='amount'?"${num.parse(couponModel.amount??"0").toInt()}$currency OFF":'${num.parse(couponModel.amount??"0").toInt()}% OFF',
                         style: GoogleFonts.josefinSans(
                           color: Colors.white,
                           fontSize: 20,
@@ -141,13 +147,13 @@ class CouponScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Divider(color: Colors.white54, height: 0),
+              const Divider(color: Colors.white54, height: 0),
               Expanded(
                 child: Center(
                   child: Text(
-                    'Discount on Purchase',
+                    'Discount on ${couponModel.discountType}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 10),
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ),
               ),
@@ -160,11 +166,11 @@ class CouponScreen extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child:  Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const  Text(
+                    const Text(
                       'Coupon Code',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -174,7 +180,7 @@ class CouponScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'RUSHDA2025',
+                      '${couponModel.code}',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.aBeeZee(
                         fontSize: 20,
@@ -182,20 +188,19 @@ class CouponScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text(
-                      'Valid Till - 30 Jan 2022',
+                     Text(
+                      'Valid Till - ${couponModel.dateExpires}',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black45, fontSize: 10),
                     ),
                   ],
                 ),
               ),
-              const Column(
+               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomSwitch(value: false),
-
+                  CustomSwitch(value: couponModel.status=="published"),
                 ],
               )
             ],

@@ -1,3 +1,4 @@
+import 'package:ashique_admin_app/model/orderRes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,7 +6,8 @@ import 'package:flutter/services.dart';
 import '../../order/OrderTile.dart';
 
 class CustomerOrder extends StatelessWidget {
-  const CustomerOrder({super.key});
+  final List<OrderModel> orders;
+  const CustomerOrder({super.key, required this.orders});
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +64,9 @@ class CustomerOrder extends StatelessWidget {
                 delegate: SliverChildBuilderDelegate(
                     (context, index) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: OrderTile(),
+                          child: OrderTile(orders[index]),
                         ),
-                    childCount: 10))
+                    childCount: orders.length))
           ],
         ),
       ),

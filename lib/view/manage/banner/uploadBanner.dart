@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:ashique_admin_app/controller/bannerController.dart';
+import 'package:ashique_admin_app/helper/helper.dart';
 import 'package:ashique_admin_app/helper/imagePicker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +16,8 @@ import '../../../config/textStyle.dart';
 
 class UploadBanner extends StatelessWidget {
   static const String routeName = 'uploadBanner';
-
-  const UploadBanner({super.key});
+  final String type;
+  const UploadBanner({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +106,7 @@ class UploadBanner extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6.0, vertical: 7),
                         child: FormBuilderTextField(
-                          obscureText: true,
+                          // obscureText: true,
                           name: 'url',
                           decoration: decoration(
                               title: 'Banner Url',
@@ -113,9 +115,8 @@ class UploadBanner extends StatelessWidget {
                               hideText: true),
                           validator: FormBuilderValidators.compose([
                             FormBuilderValidators.required(),
-                            FormBuilderValidators.maxWordsCount(8),
                           ]),
-                          autofillHints: const [AutofillHints.email],
+                          autofillHints: const [AutofillHints.url],
                           style: const TextStyle(fontSize: 14),
                         ),
                       ),
@@ -131,11 +132,19 @@ class UploadBanner extends StatelessWidget {
                                         if (bannerController
                                                 .uploadKey.currentState
                                                 ?.saveAndValidate() ??
-                                            false) {}
+                                            false) {
+                                          startLoading();
+                                          bannerController.addBanner(bannerController.uploadKey.currentState?.fields['url']!.value, type).then((value){
+                                            Get.back();
+                                            Get.back();
+                                          }).catchError((onError){
+                                            showErrorToast('Warning', 'Banner Upload Error Try Again', context);
+                                          });
+                                        }
                                       },
                             color: Theme.of(context).primaryColor,
                             disabledColor: Colors.grey,
-                            child: Text(
+                            child: const Text(
                               "Upload",
                               style: TextStyle(
                                 color: Colors.white,

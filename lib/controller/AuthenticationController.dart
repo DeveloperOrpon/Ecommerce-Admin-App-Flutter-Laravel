@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:ashique_admin_app/model/overViewRes.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
@@ -18,9 +19,10 @@ import '../view/dashboard/redirectScreen.dart';
 
 class AuthenticationController extends GetxController {
   late DIO.Dio dio;
-  Rxn<File> selectUploadProfileImage=Rxn<File>();
+  Rxn<File> selectUploadProfileImage = Rxn<File>();
   Rxn<AdminRes> adminRes = Rxn<AdminRes>();
-  final loginFormKey = GlobalKey<FormBuilderState>();
+  Rxn<OverViewModel> overViewModel = Rxn<OverViewModel>();
+    final loginFormKey = GlobalKey<FormBuilderState>();
 
   @override
   onInit() {
@@ -34,7 +36,9 @@ class AuthenticationController extends GetxController {
         requestRetrier:
             ConnectiveRequestRetrier(connectivity: Connectivity(), dio: dio)));
     super.onInit();
-
+    if(adminRes.value!=null){
+      getOverView();
+    }
     ///init value
   }
 
@@ -53,8 +57,9 @@ class AuthenticationController extends GetxController {
         Map<String, dynamic> messageRes = response.data;
         AdminRes adminResTemp = AdminRes.fromJson(messageRes);
         LocalStorage.savedUserInformation(json.encode(adminResTemp.toJson()));
-        LocalStorage.savedJWT(adminResTemp.data!.accessToken.toString());
+        LocalStorage.savedJWT(adminResTemp.accessToken.toString());
         adminRes.value = adminResTemp;
+        await getOverView();
       }
       return true;
     } on DIO.DioException catch (e) {
@@ -73,5 +78,24 @@ class AuthenticationController extends GetxController {
     LocalStorage.savedUserInformation('');
     EasyLoading.dismiss();
     Get.offAll(const RedirectScreen(), transition: Transition.fadeIn);
+  }
+
+  ///OVERVIEW
+  Future<bool>  getOverView() async {
+    String url=OVERVIEW_URL;
+    try {
+      final DIO.Response response = await dio.get(url);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> overviewRes = response.data;
+        OverViewRes overViewRes = OverViewRes.fromJson(overviewRes);
+        overViewModel.value = overViewRes.data;
+      }
+      printLog('getOverView: ${overViewModel.value!.toJson()}');
+      return true;
+    } on DIO.DioException catch (e) {
+      log(e.toString());
+      log(e.requestOptions.baseUrl + e.requestOptions.path);
+      return false;
+    }
   }
 }

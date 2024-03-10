@@ -1,47 +1,34 @@
 class AdminRes {
-  bool? success;
-  Data? data;
-
-  AdminRes({this.success, this.data});
-
-  AdminRes.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
-}
-
-class Data {
   String? accessToken;
   String? tokenType;
-  int? expiresIn;
-  AdminModel? adminModel;
+  AdminModel? user;
+  String? message;
+  int? statusCode;
 
-  Data({this.accessToken, this.tokenType, this.expiresIn, this.adminModel});
+  AdminRes(
+      {this.accessToken,
+        this.tokenType,
+        this.user,
+        this.message,
+        this.statusCode});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  AdminRes.fromJson(Map<String, dynamic> json) {
     accessToken = json['access_token'];
     tokenType = json['token_type'];
-    expiresIn = json['expires_in'];
-    adminModel = json['data'] != null ? new AdminModel.fromJson(json['data']) : null;
+    user = json['user'] != null ? new AdminModel.fromJson(json['user']) : null;
+    message = json['message'];
+    statusCode = json['status_code'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['access_token'] = this.accessToken;
     data['token_type'] = this.tokenType;
-    data['expires_in'] = this.expiresIn;
-    if (this.adminModel != null) {
-      data['data'] = this.adminModel!.toJson();
+    if (this.user != null) {
+      data['user'] = this.user!.toJson();
     }
+    data['message'] = this.message;
+    data['status_code'] = this.statusCode;
     return data;
   }
 }
@@ -53,7 +40,7 @@ class AdminModel {
   int? adminRoleId;
   String? image;
   String? email;
-  Null? emailVerifiedAt;
+  dynamic emailVerifiedAt;
   String? password;
   String? rememberToken;
   String? createdAt;
@@ -102,3 +89,4 @@ class AdminModel {
     return data;
   }
 }
+

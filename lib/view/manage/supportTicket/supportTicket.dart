@@ -1,4 +1,6 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:ashique_admin_app/helper/helper.dart';
+import 'package:ashique_admin_app/model/SupportTicketRes.dart';
 import 'package:ashique_admin_app/view/manage/supportTicket/supportReplies.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,17 +50,20 @@ class SupportTicket extends StatelessWidget {
         controller: supportController.refreshController,
         onRefresh: supportController.onRefresh,
         onLoading: supportController.onLoading,
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: const BouncingScrollPhysics(),
-          itemCount: 5,
-          itemBuilder: (context, index) => _supportTicketTile(context),
+        child: Obx(() {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              itemCount: supportController.allSupportTickets.value.length,
+              itemBuilder: (context, index) => _supportTicketTile(context,supportController.allSupportTickets.value[index]),
+            );
+          }
         ),
       ),
     );
   }
 
-  _supportTicketTile(BuildContext context) {
+  _supportTicketTile(BuildContext context, SupportTicketModel ticketModel) {
     final GlobalKey<TooltipState> tooltipkey = GlobalKey<TooltipState>();
     Future.delayed(
       Duration(seconds: 1),
@@ -89,7 +94,7 @@ class SupportTicket extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(children: [
                       TextSpan(
-                        text: "#12345 ",
+                        text: "#${ticketModel.id} ",
                         style: GoogleFonts.robotoMono(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
@@ -97,7 +102,7 @@ class SupportTicket extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: "App Issue To Order",
+                        text: "${ticketModel.subject}",
                         style: GoogleFonts.roboto(
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
@@ -111,7 +116,7 @@ class SupportTicket extends StatelessWidget {
                 child: Text(
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  "Please Check App when order a issue is arise",
+                  "${ticketModel.description}",
                   style: GoogleFonts.roboto(fontSize: 12),
                 ),
               ),Padding(
@@ -119,7 +124,7 @@ class SupportTicket extends StatelessWidget {
                 child: Text(
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  "UserName: Orpon Hasan",
+                  "UserName: ${ticketModel.name}",
                   style: GoogleFonts.roboto(fontSize: 12),
                 ),
               ),Padding(
@@ -127,22 +132,22 @@ class SupportTicket extends StatelessWidget {
                 child: Text(
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  "Email: developerorpon@gmail.com",
+                  "Email: ${ticketModel.email}",
                   style: GoogleFonts.roboto(fontSize: 12),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 6),
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(6)),
                   child: Text(
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    "App Issue",
-                    style: GoogleFonts.robotoMono(fontSize: 12),
+                    "${ticketModel.type.toString().capitalize}",
+                    style: GoogleFonts.roboto(fontSize: 12,color:Colors.white,),
                   ),
                 ),
               ),
@@ -168,9 +173,9 @@ class SupportTicket extends StatelessWidget {
                                 fontSize: 14,
                               ),
                             ),
-                            const TextSpan(
-                              text: "High",
-                              style: TextStyle(
+                            TextSpan(
+                              text: "${ticketModel.priority}",
+                              style: const TextStyle(
                                 color: Colors.green,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
@@ -204,7 +209,7 @@ class SupportTicket extends StatelessWidget {
                                     closedBorderRadius:
                                         BorderRadius.circular(8),
                                     closedBorder: Border.all(
-                                        color: 'open' == 'open'
+                                        color: ticketModel.status!.toLowerCase() != 'pending'
                                             ? Colors.green
                                             : Colors.redAccent,
                                         width: .5),
@@ -214,8 +219,18 @@ class SupportTicket extends StatelessWidget {
                                   hintText: 'Select A Type',
                                   items: const ['Open', 'Close'],
                                   initialItem:
-                                      'open' == 'open' ? "Open" : "Close",
-                                  onChanged: (value) {},
+                                  ticketModel.status!.toLowerCase() != 'pending' ? "Open" : "Close",
+                                  onChanged: (value) async {
+                                    final supportController = Get.put(SupportController());
+                                    startLoading();
+                                    await supportController.updateStatus(status: value.toLowerCase(), id: ticketModel.id.toString()).then((value) {
+                                      Get.back();
+                                    }).catchError((onError) {
+                                      // Get.back();
+                                      showErrorToast('Warning',
+                                          'Ticket Update Error Try Again', context);
+                                    });
+                                  },
                                 ),
                               ),
                             )
@@ -237,7 +252,7 @@ class SupportTicket extends StatelessWidget {
                               color: Theme.of(context).primaryColor),
                           child: InkWell(
                             onTap: () {
-                              Get.to(SupportReplies(),
+                              Get.to(SupportReplies(supportTicketModel: ticketModel),
                                   transition: Transition.fadeIn);
                             },
                             child: Icon(
