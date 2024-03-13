@@ -14,6 +14,7 @@ class ProductVariantItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log("Sku: $sku");
     return Container(
       height: 140,
       padding: EdgeInsets.all(8),
@@ -23,20 +24,21 @@ class ProductVariantItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(10)
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FormBuilderTextField(
-            name: 'sku',
-            enabled: false,
-            initialValue: sku,
-            decoration: const InputDecoration(
-                labelText: 'Variant SKU',
-                labelStyle: TextStyle(fontSize: 12)),
-            validator: FormBuilderValidators.compose([
-              FormBuilderValidators.required(),
-            ]),
-            autofillHints: const [AutofillHints.name],
-            style: const TextStyle(fontSize: 14),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text("Variant SKU",style: TextStyle(fontSize: 12,color: Colors.grey),
+            ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+            child: Text(
+              sku,
+              style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Theme.of(context).primaryColor),),
+          ),
+          Divider(color: Colors.grey.shade300,),
+
           Row(
             children: [
               Expanded(

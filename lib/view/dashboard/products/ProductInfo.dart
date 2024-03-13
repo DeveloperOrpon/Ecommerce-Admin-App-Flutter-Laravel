@@ -56,7 +56,7 @@ class ProductInfo extends StatelessWidget {
                       fontSize: 14),
                 ),
                 onPressed: () {
-                  Get.to(AddProduct(), transition: Transition.fadeIn);
+                  Get.to(const AddProduct(), transition: Transition.fadeIn);
                 },
               ),
             ),

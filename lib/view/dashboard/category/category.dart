@@ -41,7 +41,7 @@ class CategoryInfo extends StatelessWidget {
                     fontSize: 14),
               ),
               onPressed: () {
-                Get.to(AddCategory(), transition: Transition.fadeIn);
+                Get.to(const AddCategory(), transition: Transition.fadeIn);
               },
             ),
           )

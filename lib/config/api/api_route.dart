@@ -5,7 +5,7 @@ const String BASE_URL_IMAGE="http://192.168.68.116:8000";
 
 const String LOGIN_ADMIN='admin/login';
 const String PRODUCT_URL='admin/products';
-const String CATEGORIES_URL='admin/categories/';
+const String CATEGORIES_URL='admin/categories';
 const String PRODUCTS_URL='admin/products';
 const String OVERVIEW_URL='admin/overview';
 const String BEST_SELLING_URL='admin/bestSelling';
@@ -13,12 +13,14 @@ const String ORDER_URL='admin/orders';
 const String BANNER_URL='admin/banner';
 const String CUSTOMER_URL='admin/customer';
 const String BRAND_URL='admin/brand';
+const String SELLER_URL='admin/seller';
 const String BUSNIESS_SETTING_URL='admin/paymentMethod';
 const String SUPPORT_TICKET_URL='admin/supportTicket';
 const String PAYMENT_METHOD_URL='admin/paymentMethod';
 const String SHIPPING_METHOD_URL='admin/shippingMethod';
 const String COUPON_URL='admin/coupon';
 const String FLASH_URL='admin/flash';
+const String ATTRIBUTE_URL='admin/attribute';
 
 
 const String PRODUCT_IMAGE_URL='$BASE_URL_IMAGE/storage/product/';

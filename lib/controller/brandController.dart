@@ -46,6 +46,7 @@ class BrandController extends GetxController {
         requestRetrier:
             ConnectiveRequestRetrier(connectivity: Connectivity(), dio: dio)));
     super.onInit();
+    getAllBrand();
   }
 
   int page = 1;

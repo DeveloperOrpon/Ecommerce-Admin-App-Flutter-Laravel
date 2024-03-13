@@ -10,6 +10,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/productAddController.dart';
+import '../../../controller/productController.dart';
 
 class AddVariantScreen extends StatelessWidget {
   const AddVariantScreen({super.key});
@@ -17,11 +18,15 @@ class AddVariantScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProductAddController productAddController = Get.put(ProductAddController());
+    ProductController productController = Get.put(ProductController());
+    if(productController.allAttribute.value.isEmpty){
+      productController.getAttributes();
+    }
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
-        title: const Text("Add Variant"),
+        title:  Text("Add Variant ${productController.allAttribute.value.length}"),
         leading: IconButton(
           onPressed: () {
             Get.back();
@@ -35,91 +40,102 @@ class AddVariantScreen extends StatelessWidget {
       body: ListView(
         physics: BouncingScrollPhysics(),
         children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: ExpansionTile(
-              initiallyExpanded: true,
-              collapsedBackgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: BorderSide.none,
-              ),
-              collapsedShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: BorderSide.none,
-              ),
-              backgroundColor: Colors.white,
-              title: Text('Size'),
-              children: [
-                Obx(() => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ...productAddController.sizeList.value.map((e) => Row(
-                              children: [
-                                Container(
-                                  height: 30,
-                                  width: 30,
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 5),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4),
-                                      color: Colors.green.withOpacity(.4)),
-                                ),
-                                Text(
-                                  e,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal),
-                                ),
-                                Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 16.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      List sizeMap =
-                                          productAddController.sizeList.value;
-                                      sizeMap.remove(e);
-                                      productAddController.sizeList.value = [];
-                                      productAddController.sizeList.value =
-                                          sizeMap;
-                                    },
-                                    child: Text(
-                                      'Delete',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ))
-                      ],
-                    )),
-                TextButton(
-                  style: TextButton.styleFrom(
-                      side: const BorderSide(color: Colors.grey, width: .4),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      )),
-                  onPressed: () {
-                    showSizePickerDialog(context, productAddController);
-                  },
-                  child: Obx(() {
-                    return Text(
-                      productAddController.sizeList.value.isEmpty
-                          ? 'Add Size'
-                          : 'Add Another Size',
-                      style: TextStyle(fontSize: 12),
-                    );
-                  }),
+          Obx(() => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: productController.allAttribute.value.map((e) =>Container(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: ExpansionTile(
+                initiallyExpanded: true,
+                collapsedBackgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide.none,
                 ),
-                SizedBox(
-                  height: 10,
-                )
-              ],
-            ),
-          ),
+                collapsedShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide.none,
+                ),
+                backgroundColor: Colors.white,
+                title: Text('${e.name}'),
+                children: [
+                  Obx(() => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...(productAddController.selectedAttribute[e.name]??[]).map((a) => Row(
+                        children: [
+                          Container(
+                            height: 30,
+                            width: 30,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.green.withOpacity(.4)),
+                          ),
+                          Text(
+                            a,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal),
+                          ),
+                          Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: InkWell(
+                              onTap: () {
+                                List sizeListFormMap = productAddController.selectedAttribute[e.name]!??[];
+                                sizeListFormMap.remove(a);
+                                Set<dynamic> uniqueMapAttribute = Set<dynamic>.from(sizeListFormMap);
+                                productAddController.selectedAttribute.value.remove(e.name);
+                                var temp=productAddController.selectedAttribute.value;
+                                temp.addAll({
+                                  e.name!:uniqueMapAttribute.toList()
+                                });
+                                productAddController.selectedAttribute.value={};
+                                productAddController.selectedAttribute.value=temp;
+                                log("${productAddController.selectedAttribute}");
+                                productAddController.generateCombinations(productAddController.pickColors.value.keys.toList(),productAddController.selectedAttribute.value);
+
+                              },
+                              child: const Text(
+                                'Delete',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ))
+                    ],
+                  )),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                        side: const BorderSide(color: Colors.grey, width: .4),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        )),
+                    onPressed: () {
+                      showSizePickerDialog(context, productAddController,e.name.toString());
+                    },
+                    child: Obx(() {
+                      return Text(
+                        productAddController.sizeList.value.isEmpty
+                            ? 'Add ${e.name}'
+                            : 'Add Another ${e.name}',
+                        style: TextStyle(fontSize: 12),
+                      );
+                    }),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  )
+                ],
+              ),
+            ) ).toList(),
+          ))
+          ,
           Container(
             margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: ExpansionTile(
@@ -173,6 +189,8 @@ class AddVariantScreen extends StatelessWidget {
                                               .pickColors.value = {};
                                           productAddController
                                               .pickColors.value = colorMap;
+                                          productAddController.generateCombinations(productAddController.pickColors.value.keys.toList(),productAddController.selectedAttribute.value);
+
                                         },
                                         child: Text(
                                           'Delete',
@@ -207,6 +225,8 @@ class AddVariantScreen extends StatelessWidget {
                     productAddController.pickColors.value = {};
                     productAddController.pickColors.value = colorMap;
                     log('${productAddController.pickColors}');
+                    productAddController.generateCombinations(productAddController.pickColors.value.keys.toList(),productAddController.selectedAttribute.value);
+
                   },
                   child: Obx(() {
                     return Text(
@@ -235,8 +255,7 @@ class AddVariantScreen extends StatelessWidget {
           Obx(() => Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...generateCombinations(productAddController.sizeList.value,
-                          productAddController.pickColors.value.keys.toList())
+                  ...productAddController.selectedVariant
                       .map((e) => ProductVariantItem(sku: e))
                 ],
               )),
@@ -247,7 +266,7 @@ class AddVariantScreen extends StatelessWidget {
   }
 
   showSizePickerDialog(
-      BuildContext context, ProductAddController productAddController) {
+      BuildContext context, ProductAddController productAddController, String name) {
     final _formKey = GlobalKey<FormBuilderState>();
 
     showDialog<String>(
@@ -271,10 +290,10 @@ class AddVariantScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 13.0, vertical: 7),
                         child: FormBuilderTextField(
-                          name: 'size',
+                          name: '${name}',
                           initialValue: '1',
                           decoration: InputDecoration(
-                              labelText: 'Size',
+                              labelText: '${name}',
                               prefixIcon:
                                   Icon(CupertinoIcons.selection_pin_in_out),
                               labelStyle: TextStyle(fontSize: 12)),
@@ -291,13 +310,21 @@ class AddVariantScreen extends StatelessWidget {
                       onPressed: () {
                         Get.back();
                         var sizeValue =
-                            _formKey.currentState!.fields['size']?.value;
-                        List sizeList = productAddController.sizeList.value;
-                        sizeList.add(sizeValue);
-                        productAddController.sizeList.value = [];
-                        Set<dynamic> uniqueSizes = Set<dynamic>.from(sizeList);
-                        productAddController.sizeList.value =
-                            uniqueSizes.toList();
+                            _formKey.currentState!.fields['${name}']?.value;
+                        List sizeListFormMap = productAddController.selectedAttribute[name]??[];
+                        sizeListFormMap.add(sizeValue);
+                        Set<dynamic> uniqueMapAttribute = Set<dynamic>.from(sizeListFormMap);
+                        productAddController.selectedAttribute.value.remove(name);
+                        var temp=productAddController.selectedAttribute.value;
+                        temp.addAll({
+                          name:uniqueMapAttribute.toList()
+                        });
+                        productAddController.selectedAttribute.value={};
+                        productAddController.selectedAttribute.value=temp;
+                        log("${productAddController.selectedAttribute}");
+                        productAddController.generateCombinations(productAddController.pickColors.value.keys.toList(),productAddController.selectedAttribute.value);
+                        // selectedAttribute[name]! =
+                        //     uniqueMapAttribute.toList();
                       },
                       child: Text('Add'),
                       style: ElevatedButton.styleFrom(

@@ -1,3 +1,4 @@
+import 'package:ashique_admin_app/controller/productAddController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -7,18 +8,13 @@ import 'package:get/get.dart';
 import '../homeScreen.dart';
 import 'addProductDetails.dart';
 
-class AddProduct extends StatefulWidget {
+class AddProduct extends StatelessWidget {
   const AddProduct({super.key});
 
   @override
-  State<AddProduct> createState() => _AddProductState();
-}
-
-class _AddProductState extends State<AddProduct> {
-  final _formKey = GlobalKey<FormBuilderState>();
-
-  @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormBuilderState>();
+    final addProductController=Get.put(ProductAddController());
     return Scaffold(
       appBar: AppBar(
         title: Text("Adding a product"),
@@ -39,7 +35,7 @@ class _AddProductState extends State<AddProduct> {
                   const EdgeInsets.symmetric(horizontal: 13.0, vertical: 7),
               child: FormBuilderTextField(
                 name: 'name',
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Name', labelStyle: TextStyle(fontSize: 12)),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
@@ -54,12 +50,13 @@ class _AddProductState extends State<AddProduct> {
               child: FormBuilderTextField(
                 name: 'price',
                 initialValue: '0.00',
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Price',
                     prefixIcon: Icon(CupertinoIcons.money_dollar),
                     labelStyle: TextStyle(fontSize: 12)),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
+                  FormBuilderValidators.numeric(),
                 ]),
                 autofillHints: const [AutofillHints.name],
                 style: const TextStyle(fontSize: 14),
@@ -91,6 +88,7 @@ class _AddProductState extends State<AddProduct> {
                           TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                     onChanged: field.didChange,
+
                     value: field.value ?? false,
                   ),
                 );
@@ -108,14 +106,16 @@ class _AddProductState extends State<AddProduct> {
               padding: const EdgeInsets.all(8.0),
               child: CupertinoButton(
                 color: Theme.of(context).colorScheme.primary,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   bottomRight: Radius.circular(10),
                   topLeft: Radius.circular(10),
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.saveAndValidate()) {
                     if (true) {
-                      Get.to(AddProductDetails(),transition: Transition.cupertino);
+                      addProductController.productName.value=_formKey.currentState!.value["name"]??"";
+                      addProductController.productPrice.value=_formKey.currentState!.value["price"]??"";
+                      Get.to(const AddProductDetails(),transition: Transition.cupertino);
                     }
                   }
                   debugPrint(_formKey.currentState?.value.toString());
@@ -123,7 +123,7 @@ class _AddProductState extends State<AddProduct> {
                 child: Text(
                   'Add Product'.toUpperCase(),
                   style:
-                      TextStyle(color: Colors.white, fontFamily: 'robotoMono'),
+                      const TextStyle(color: Colors.white, fontFamily: 'robotoMono'),
                 ),
               ),
             ),

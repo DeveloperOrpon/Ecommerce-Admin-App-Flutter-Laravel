@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:ashique_admin_app/controller/BusinessSettingController.dart';
+import 'package:ashique_admin_app/controller/sellerController.dart';
+import 'package:ashique_admin_app/model/sellerModelRes.dart';
 import 'package:ashique_admin_app/view/manage/Sellers/sellerDetails.dart';
 import 'package:ashique_admin_app/view/manage/Sellers/sellerOrders.dart';
 import 'package:ashique_admin_app/view/manage/Sellers/sellerProduct.dart';
@@ -13,8 +15,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../config/appConst.dart';
+import '../../../config/refresh.dart';
 
 class SellersScreen extends StatelessWidget {
   static const String routeName = 'SellersScreen';
@@ -24,51 +28,53 @@ class SellersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final businessSettingController = Get.put(BusinessSettingController());
+    final sellerController = Get.put(SellerController());
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+        centerTitle: true,
+        title: const Text(
+          'Sellers',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ),
       body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: CustomScrollView(
+          child: Obx(() {
+            return SmartRefresher(
               physics: const BouncingScrollPhysics(),
-              slivers: [
-                const SliverAppBar(
-                  elevation: 0,
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.white,
-                  surfaceTintColor: Colors.white,
-                  systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarBrightness: Brightness.dark,
-                    statusBarIconBrightness: Brightness.dark,
-                  ),
-                  pinned: true,
-                  floating: true,
-                  automaticallyImplyLeading: false,
-                  centerTitle: true,
-                  title: Text(
-                    'Sellers',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                  actions: [
-                    // IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.search))
-                  ],
-                ),
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    _sellerTitle(context),
-                    _sellerTitle(context),
-                    _sellerTitle(context),
-                    _sellerTitle(context),
-                    _sellerTitle(context),
-                    _sellerTitle(context),
+              enablePullDown: true,
+              enablePullUp: true,
+              header: refreshLoading(context),
+              footer: customFooter,
+              controller: sellerController.refreshController,
+              onRefresh: sellerController.onRefresh,
+              onLoading: sellerController.onLoading,
+              child: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (context, index) => _sellerTitle(context,sellerController.allSeller.value[index]),
+                          childCount: sellerController.allSeller.length),
+                    )
                   ]),
-                )
-              ])),
+            );
+          })),
     );
   }
 
-  Padding _sellerTitle(BuildContext context) {
+  Padding _sellerTitle(BuildContext context, SellerModel sellerModel) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: InkWell(
@@ -126,7 +132,6 @@ class SellersScreen extends StatelessWidget {
                               : TextAvatar(
                                   text: 'Orpon',
                                   size: 30,
-
                                   backgroundColor:
                                       Theme.of(context).primaryColor,
                                 )),
@@ -152,7 +157,7 @@ class SellersScreen extends StatelessWidget {
                                         Row(
                                           children: [
                                             Text(
-                                              'Mofizol Hasan| ',
+                                              '${sellerModel.fName} ${sellerModel.lName}| ',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   color: Theme.of(context)
@@ -167,13 +172,13 @@ class SellersScreen extends StatelessWidget {
                                                       horizontal: 4,
                                                       vertical: 1),
                                               decoration: BoxDecoration(
-                                                color: Colors.green,
+                                                color:sellerModel.status=='approved'? Colors.green:Colors.red,
                                                 borderRadius:
                                                     BorderRadius.circular(4),
                                               ),
-                                              child: const Text(
-                                                'Active',
-                                                style: TextStyle(
+                                              child: Text(
+                                                sellerModel.status=='approved'?'Active':"Inactive",
+                                                style: const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 8,
                                                     height: 150 / 100),
@@ -184,7 +189,7 @@ class SellersScreen extends StatelessWidget {
                                         Flexible(
                                           flex: 4,
                                           child: Text(
-                                            'vandor@rushdasoft.com',
+                                            '${sellerModel.email}',
                                             style: TextStyle(
                                                 color: Colors.orange[400],
                                                 fontSize: 10,
@@ -223,7 +228,7 @@ class SellersScreen extends StatelessWidget {
                               transition: Transition.rightToLeftWithFade);
                         },
                         label: Text(
-                          "Orders : 20",
+                          "Orders : ${(sellerModel.orders??[]).length}",
                           style: TextStyle(
                               // fontWeight: FontWeight.w600,
                               color: Theme.of(context).primaryColor,
@@ -250,7 +255,7 @@ class SellersScreen extends StatelessWidget {
                               transition: Transition.rightToLeftWithFade);
                         },
                         label: Text(
-                          "Products : 10",
+                          "Products : ${(sellerModel.product??[]).length}",
                           style: TextStyle(
                               // fontWeight: FontWeight.w600,
                               color: Theme.of(context).primaryColor,
